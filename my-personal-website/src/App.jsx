@@ -80,7 +80,7 @@ const Home = () => {
         top: `${top}%`,
         left: `${left}%`,
         size: `${Math.random() * 150 + 50}px`,
-        animationDuration: `${Math.random() * 20 + 10}s`,
+        animationDuration: `${Math.random() * 1}s`,
         color: colors[Math.floor(Math.random() * colors.length)]
       });
     }
