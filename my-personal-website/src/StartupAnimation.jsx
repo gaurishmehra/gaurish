@@ -18,7 +18,7 @@ const StartupAnimation = () => {
     canvas.height = window.innerHeight;
 
     const particles = [];
-    const particleCount = 100;
+    const particleCount = 25;
 
     class Particle {
       constructor() {
