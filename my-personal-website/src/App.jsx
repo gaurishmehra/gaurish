@@ -1,6 +1,10 @@
+// Home.js
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useViewportScroll, useTransform, useAnimation } from 'framer-motion';
-import { Github, Twitter, ExternalLink, Send, ChevronDown, Code, Terminal, Server, Brain } from 'lucide-react';
+import { Github, Twitter, ExternalLink, Send, ChevronDown } from 'lucide-react';
+import TerminalChat from './TerminalChat';
+import MouseGalaxy from './MouseGalaxy';
+import StartupAnimation from './StartupAnimation';
 
 const Home = () => {
   const [currentSection, setCurrentSection] = useState('home');
@@ -37,13 +41,6 @@ const Home = () => {
     "Among the 3 JEE subjects, the only one that sucks is Chemistry. Physics and Maths are fun.",
   ];
 
-  const skills = [
-    { name: "Frontend Development", icon: Code, proficiency: 80 },
-    { name: "Backend Development", icon: Server, proficiency: 85 },
-    { name: "Linux (I use Arch btw..)", icon: Terminal, proficiency: 100 },
-    { name: "Logical Reasoning", icon: Brain, proficiency: 95 },
-  ];
-  
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY + window.innerHeight / 6;
@@ -129,75 +126,18 @@ const Home = () => {
     return () => clearInterval(intervalId);
   }, []);
 
+  const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
 
-  const SkillItem = ({ skill, index }) => {
-    const controls = useAnimation();
-
-    return (
-      <motion.div
-        key={index}
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: index * 0.2 }}
-        className="bg-gray-900 rounded-lg p-6 shadow-lg border border-pink-500 overflow-hidden relative"
-        whileHover={{ scale: 1.05 }}
-        onHoverStart={() => controls.start('hover')}
-        onHoverEnd={() => controls.start('initial')}
-      >
-        <div className="flex items-center mb-4">
-          <motion.div
-            animate={controls}
-            variants={{
-              initial: { rotate: 0 },
-              hover: { rotate: 360 }
-            }}
-            transition={{ duration: 0.5 }}
-          >
-            <skill.icon size={24} className="text-pink-400 mr-2" />
-          </motion.div>
-          <h3 className="text-xl font-semibold text-purple-300">{skill.name}</h3>
-        </div>
-        <div className="w-full bg-gray-700 rounded-full h-2.5 mb-4">
-          <motion.div
-            className="bg-pink-500 h-2.5 rounded-full"
-            initial={{ width: 0 }}
-            whileInView={{ width: `${skill.proficiency}%` }}
-            transition={{ duration: 1, delay: 0.5 }}
-          />
-        </div>
-        <motion.p
-          className="text-right text-sm text-gray-400"
-          animate={controls}
-          variants={{
-            initial: { y: 0, opacity: 1 },
-            hover: { y: -20, opacity: 0 }
-          }}
-          transition={{ duration: 0.3 }}
-        >
-          {skill.proficiency}%
-        </motion.p>
-        <motion.p
-          className="text-right text-sm text-pink-400 font-semibold absolute bottom-6 right-6"
-          initial={{ y: 20, opacity: 0 }}
-          animate={controls}
-          variants={{
-            initial: { y: 20, opacity: 0 },
-            hover: { y: 0, opacity: 1 }
-          }}
-          transition={{ duration: 0.3 }}
-        >
-          Personal Evaluation
-        </motion.p>
-      </motion.div>
-    );
-  };
-
-
-
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
-    <div className="min-h-screen w-full bg-[#0a0a0a] text-white overflow-x-hidden font-mono">
+    <div className="min-h-screen w-full bg-[#0a0a0a] text-white overflow-x-hidden font-mono relative">
       {/* Space Background */}
       <div className="fixed inset-0 z-0">
         <div className="absolute inset-0 bg-[#0a0a0a]" />
@@ -252,8 +192,14 @@ const Home = () => {
         ))}
       </div>
 
+      {/* Mouse Galaxy */}
+      <MouseGalaxy />
+
       {/* Content */}
       <div className="relative z-10">
+        {/* Startup Animation */}
+        {isLoading && <StartupAnimation />}
+
         {/* Hero Section */}
         <section
           id="home"
@@ -378,33 +324,14 @@ const Home = () => {
           </motion.div>
         </section>
 
-        {/* Skills Section */}
+        {/* Terminal Section */}
         <section
-        id="skills"
-        className="min-h-screen flex flex-col justify-center items-center px-4 py-16"
-        ref={(el) => (sectionsRef.current['skills'] = el)}
-      >
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-          className="max-w-4xl w-full"
+          id="terminal"
+          className="min-h-screen flex flex-col justify-center items-center px-4 py-16"
+          ref={(el) => (sectionsRef.current['terminal'] = el)}
         >
-          <motion.h2
-            className="text-4xl font-bold mb-12 text-center bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-600"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            Cosmic Skills
-          </motion.h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {skills.map((skill, index) => (
-              <SkillItem key={index} skill={skill} index={index} />
-            ))}
-          </div>
-        </motion.div>
-      </section>
+          <TerminalChat />
+        </section>
 
         {/* Projects Section */}
         <section
@@ -426,7 +353,7 @@ const Home = () => {
             >
               Stellar Projects
             </motion.h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 justify-center">
               {projects.map((project, index) => (
                 <motion.div
                   key={index}
@@ -558,7 +485,7 @@ const Home = () => {
       {/* Navigation Dots */}
       <div className="fixed right-4 md:right-8 top-1/2 transform -translate-y-1/2 z-50">
         <div className="flex flex-col md:space-y-4 space-y-2">
-          {['home', 'about', 'skills', 'projects', 'thoughts', 'contact'].map((section) => (
+          {['home', 'about', 'terminal', 'projects', 'thoughts', 'contact'].map((section) => (
             <motion.div
               key={section}
               className={`w-2 md:w-3 h-2 md:h-3 rounded-full cursor-pointer ${
