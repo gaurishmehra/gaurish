@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useViewportScroll, useTransform, useAnimation } from 'framer-motion';
-import { Github, Twitter, ExternalLink, Send, ChevronDown } from 'lucide-react';
+import { Github, Twitter, ExternalLink, Send, ChevronDown, Code, Terminal, Server, Brain } from 'lucide-react';
 
 const Home = () => {
   const [currentSection, setCurrentSection] = useState('home');
@@ -37,9 +37,16 @@ const Home = () => {
     "Among the 3 JEE subjects, the only one that sucks is Chemistry. Physics and Maths are fun.",
   ];
 
+  const skills = [
+    { name: "Frontend Development", icon: Code, proficiency: 80 },
+    { name: "Backend Development", icon: Server, proficiency: 85 },
+    { name: "Linux (I use Arch btw..)", icon: Terminal, proficiency: 100 },
+    { name: "Logical Reasoning", icon: Brain, proficiency: 95 },
+  ];
+  
   useEffect(() => {
     const handleScroll = () => {
-      const scrollPosition = window.scrollY + window.innerHeight / 5;
+      const scrollPosition = window.scrollY + window.innerHeight / 6;
       
       const sectionEntries = Object.entries(sectionsRef.current);
       const currentSectionEntry = sectionEntries.find(([_, element]) => 
@@ -58,12 +65,10 @@ const Home = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-
-
   const generateGalaxies = (count) => {
     const galaxies = [];
     const colors = ['#FF1493', '#FF69B4', '#FF00FF', '#8A2BE2', '#9400D3'];
-    const minDistance = 30;
+    const minDistance = 100;
 
     for (let i = 0; i < count; i++) {
       let top, left, overlapping;
@@ -80,7 +85,8 @@ const Home = () => {
         top: `${top}%`,
         left: `${left}%`,
         size: `${Math.random() * 150 + 50}px`,
-        animationDuration: `${Math.random() * 1}s`,
+        rotationDuration: `${Math.random() * 100 + 50}s`,
+        pulseDuration: `${Math.random() * 3 + 2}s`,
         color: colors[Math.floor(Math.random() * colors.length)]
       });
     }
@@ -102,7 +108,7 @@ const Home = () => {
   const scrollToSection = (sectionId) => {
     const section = sectionsRef.current[sectionId];
     if (section) {
-      const offset = window.innerHeight / 10;
+      const offset = window.innerHeight / 100;
       const elementPosition = section.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - offset;
 
@@ -113,19 +119,80 @@ const Home = () => {
     }
   };
 
-  // The return statement and JSX remain unchanged
-
-  const [galaxies, setGalaxies] = useState(generateGalaxies(5));
+  const [galaxies, setGalaxies] = useState(generateGalaxies(8));
 
   useEffect(() => {
-    // Regenerate galaxies every 5 seconds (adjust as needed)
     const intervalId = setInterval(() => {
-      setGalaxies(generateGalaxies(5));
-    }, 5000);
+      setGalaxies(generateGalaxies(8));
+    }, 15000);
 
-    // Cleanup the interval on component unmount
     return () => clearInterval(intervalId);
-  }, []); 
+  }, []);
+
+
+
+  const SkillItem = ({ skill, index }) => {
+    const controls = useAnimation();
+
+    return (
+      <motion.div
+        key={index}
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: index * 0.2 }}
+        className="bg-gray-900 rounded-lg p-6 shadow-lg border border-pink-500 overflow-hidden relative"
+        whileHover={{ scale: 1.05 }}
+        onHoverStart={() => controls.start('hover')}
+        onHoverEnd={() => controls.start('initial')}
+      >
+        <div className="flex items-center mb-4">
+          <motion.div
+            animate={controls}
+            variants={{
+              initial: { rotate: 0 },
+              hover: { rotate: 360 }
+            }}
+            transition={{ duration: 0.5 }}
+          >
+            <skill.icon size={24} className="text-pink-400 mr-2" />
+          </motion.div>
+          <h3 className="text-xl font-semibold text-purple-300">{skill.name}</h3>
+        </div>
+        <div className="w-full bg-gray-700 rounded-full h-2.5 mb-4">
+          <motion.div
+            className="bg-pink-500 h-2.5 rounded-full"
+            initial={{ width: 0 }}
+            whileInView={{ width: `${skill.proficiency}%` }}
+            transition={{ duration: 1, delay: 0.5 }}
+          />
+        </div>
+        <motion.p
+          className="text-right text-sm text-gray-400"
+          animate={controls}
+          variants={{
+            initial: { y: 0, opacity: 1 },
+            hover: { y: -20, opacity: 0 }
+          }}
+          transition={{ duration: 0.3 }}
+        >
+          {skill.proficiency}%
+        </motion.p>
+        <motion.p
+          className="text-right text-sm text-pink-400 font-semibold absolute bottom-6 right-6"
+          initial={{ y: 20, opacity: 0 }}
+          animate={controls}
+          variants={{
+            initial: { y: 20, opacity: 0 },
+            hover: { y: 0, opacity: 1 }
+          }}
+          transition={{ duration: 0.3 }}
+        >
+          Personal Evaluation
+        </motion.p>
+      </motion.div>
+    );
+  };
+
 
 
 
@@ -133,7 +200,7 @@ const Home = () => {
     <div className="min-h-screen w-full bg-[#0a0a0a] text-white overflow-x-hidden font-mono">
       {/* Space Background */}
       <div className="fixed inset-0 z-0">
-      <div className="absolute inset-0 bg-[#0a0a0a]" />
+        <div className="absolute inset-0 bg-[#0a0a0a]" />
         {galaxies.map((galaxy) => (
           <motion.div
             key={galaxy.id}
@@ -144,17 +211,21 @@ const Home = () => {
               width: galaxy.size,
               height: galaxy.size,
               backgroundColor: galaxy.color,
-              animationDuration: galaxy.animationDuration
             }}
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 0.8, scale: 1 }} 
-            transition={{ duration: 2, delay: Math.random() * 2 }}
-            whileHover={{ scale: 1.1 }}
-            layout
-            layoutId={`galaxy-${galaxy.id}`} 
+            initial={{ opacity: 0, scale: 0.5, rotate: 0 }}
+            animate={{ 
+              opacity: [0.5, 0.8, 0.5], 
+              scale: [1, 1.2, 1],
+              rotate: 360
+            }}
+            transition={{ 
+              opacity: { duration: parseFloat(galaxy.pulseDuration), repeat: Infinity },
+              scale: { duration: parseFloat(galaxy.pulseDuration), repeat: Infinity },
+              rotate: { duration: parseFloat(galaxy.rotationDuration), repeat: Infinity, ease: "linear" }
+            }}
           />
         ))}
-        {generateShootingStars(10).map((star) => (
+        {generateShootingStars(20).map((star) => (
           <motion.div
             key={star.id}
             className="absolute bg-white rounded-full"
@@ -163,13 +234,20 @@ const Home = () => {
               left: star.left,
               width: star.size,
               height: star.size,
-              animationDuration: star.animationDuration,
-              animationDelay: star.animationDelay,
               transform: `rotate(${star.angle}deg)`
             }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1, x: `-${star.angle * 2}px` }}
-            transition={{ duration: parseFloat(star.animationDuration), ease: "linear", repeat: Infinity }}
+            initial={{ opacity: 0, x: 0, y: 0 }}
+            animate={{ 
+              opacity: [0, 1, 0],
+              x: `-${Math.cos(star.angle * Math.PI / 180) * 100}vw`,
+              y: `${Math.sin(star.angle * Math.PI / 180) * 100}vh`
+            }}
+            transition={{ 
+              duration: parseFloat(star.animationDuration),
+              delay: parseFloat(star.animationDelay),
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
           />
         ))}
       </div>
@@ -263,11 +341,11 @@ const Home = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              I am Gaurish, currently in 12th grade, studying in India.<br></br>
-              I am JEE aspirant and a self-taught full-stack developer.<br></br>
-              I love to make open-source projects and contribute to them.<br></br>
-              I am also a huge fan of Llm(s).<br></br>
-              I currently am not looking for any job opportunities, hit me up for a cool project though.<br></br>
+              I am Gaurish, currently in 12th grade, studying in India.<br />
+              I am JEE aspirant and a self-taught full-stack developer.<br />
+              I love to make open-source projects and contribute to them.<br />
+              I am also a huge fan of Llm(s).<br />
+              I currently am not looking for any job opportunities, hit me up for a cool project though.<br />
             </motion.p>
             <motion.h3
               className="text-2xl font-semibold mb-4 text-pink-400"
@@ -300,6 +378,34 @@ const Home = () => {
           </motion.div>
         </section>
 
+        {/* Skills Section */}
+        <section
+        id="skills"
+        className="min-h-screen flex flex-col justify-center items-center px-4 py-16"
+        ref={(el) => (sectionsRef.current['skills'] = el)}
+      >
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+          className="max-w-4xl w-full"
+        >
+          <motion.h2
+            className="text-4xl font-bold mb-12 text-center bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-600"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            Cosmic Skills
+          </motion.h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {skills.map((skill, index) => (
+              <SkillItem key={index} skill={skill} index={index} />
+            ))}
+          </div>
+        </motion.div>
+      </section>
+
         {/* Projects Section */}
         <section
           id="projects"
@@ -313,7 +419,7 @@ const Home = () => {
             className="max-w-6xl w-full"
           >
             <motion.h2
-              className="text-4xl font-bold mb-12 text-center bg-clip-text text-transparent bg-gradient-to-r from-pink-400 topurple-600"
+              className="text-4xl font-bold mb-12 text-center bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-600"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
@@ -452,7 +558,7 @@ const Home = () => {
       {/* Navigation Dots */}
       <div className="fixed right-4 md:right-8 top-1/2 transform -translate-y-1/2 z-50">
         <div className="flex flex-col md:space-y-4 space-y-2">
-          {['home', 'about', 'projects', 'thoughts', 'contact'].map((section) => (
+          {['home', 'about', 'skills', 'projects', 'thoughts', 'contact'].map((section) => (
             <motion.div
               key={section}
               className={`w-2 md:w-3 h-2 md:h-3 rounded-full cursor-pointer ${
