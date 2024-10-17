@@ -116,12 +116,12 @@ const Home = () => {
     }
   };
 
-  const [galaxies, setGalaxies] = useState(generateGalaxies(8));
+  const [galaxies, setGalaxies] = useState(generateGalaxies(4));
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setGalaxies(generateGalaxies(8));
-    }, 15000);
+      setGalaxies(generateGalaxies(4));
+    }, 30000);
 
     return () => clearInterval(intervalId);
   }, []);
@@ -165,7 +165,7 @@ const Home = () => {
             }}
           />
         ))}
-        {generateShootingStars(20).map((star) => (
+        {generateShootingStars(10).map((star) => (
           <motion.div
             key={star.id}
             className="absolute bg-white rounded-full"
