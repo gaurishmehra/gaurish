@@ -49,3 +49,56 @@
 .read-the-docs:hover {
   color: #333;
 }
+
+/* New animations for smoother transitions */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+}
+
+/* Ensure styles are optimized for both desktop and mobile */
+@media (max-width: 768px) {
+  .card {
+    padding: 1em;
+  }
+
+  .logo {
+    height: 4em;
+    padding: 1em;
+  }
+}

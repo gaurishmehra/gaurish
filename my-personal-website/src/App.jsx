@@ -149,6 +149,44 @@ const Home = () => {
     return () => clearInterval(intervalId);
   }, []);
 
+  // New handleScroll function to auto-scroll to the next section when a small scroll is detected
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + window.innerHeight / 6;
+      
+      const sectionEntries = Object.entries(sectionsRef.current);
+      const currentSectionEntry = sectionEntries.find(([_, element]) => 
+        element.offsetTop <= scrollPosition && 
+        element.offsetTop + element.offsetHeight > scrollPosition
+      );
+
+      if (currentSectionEntry) {
+        setCurrentSection(currentSectionEntry[0]);
+      }
+
+      // Auto-scroll to the next section when a small scroll is detected
+      const nextSectionIndex = sectionEntries.findIndex(([key]) => key === currentSectionEntry[0]) + 1;
+      if (nextSectionIndex < sectionEntries.length) {
+        const nextSection = sectionEntries[nextSectionIndex][1];
+        if (nextSection) {
+          const offset = window.innerHeight / 100;
+          const elementPosition = nextSection.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initial call to set the current section on mount
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <div className="min-h-screen w-full bg-[#0a0a0a] text-white overflow-x-hidden font-mono relative">
       {/* Space Background */}
