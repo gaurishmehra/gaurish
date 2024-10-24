@@ -64,12 +64,6 @@ body {
     border: 1px solid #ddd; /* Add a subtle border */
     padding: 1rem;
     border-radius: 8px; /* Rounded corners */
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions for hover effects */
-  }
-  
-  .experience-item:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   }
   
   .experience-item h3 {
@@ -115,7 +109,6 @@ nav {
     position: fixed; /* Make it sticky */
     width: 100%;
     z-index: 10; /* Ensure it's on top of other content */
-    transition: background-color 0.3s ease, border-bottom 0.3s ease; /* Smooth transitions for navbar */
   }
   
   nav ul {
@@ -132,10 +125,9 @@ nav {
     font-weight: 500; /* Slightly bolder font */
     padding: 0.5rem 1rem; /* Add padding around links */
     border-radius: 5px; /* Rounded corners for links */
-    transition: background-color 0.2s ease, color 0.2s ease; /* Smooth hover effect */
+    transition: background-color 0.2s ease; /* Smooth hover effect */
   }
   
   nav a:hover {
     background-color: #f0f0f0; /* Light background on hover */
-    color: #000; /* Darker text color on hover */
   }
