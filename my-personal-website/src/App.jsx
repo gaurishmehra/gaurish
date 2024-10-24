@@ -1,9 +1,7 @@
-// Home.js
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useViewportScroll, useTransform, useAnimation } from 'framer-motion';
 import { Github, Twitter, ExternalLink, Send, ChevronDown } from 'lucide-react';
 import TerminalChat from './TerminalChat';
-// import MouseGalaxy from './MouseGalaxy';
 import StartupAnimation from './StartupAnimation';
 
 const Home = () => {
@@ -191,9 +189,6 @@ const Home = () => {
           />
         ))}
       </div>
-
-      {/* Mouse Galaxy */}
-      {/* <MouseGalaxy /> */}
 
       {/* Content */}
       <div className="relative z-10">
