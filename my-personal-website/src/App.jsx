@@ -134,6 +134,21 @@ const Home = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  // Auto-scroll functionality
+  useEffect(() => {
+    const sectionIds = ['home', 'about', 'terminal', 'projects', 'thoughts', 'contact'];
+    let currentIndex = 0;
+
+    const autoScroll = () => {
+      currentIndex = (currentIndex + 1) % sectionIds.length;
+      scrollToSection(sectionIds[currentIndex]);
+    };
+
+    const intervalId = setInterval(autoScroll, 10000); // Change section every 10 seconds
+
+    return () => clearInterval(intervalId);
+  }, []);
+
   return (
     <div className="min-h-screen w-full bg-[#0a0a0a] text-white overflow-x-hidden font-mono relative">
       {/* Space Background */}
