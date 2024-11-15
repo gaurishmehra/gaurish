@@ -1,88 +1,43 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { motion, useAnimation, AnimatePresence } from 'framer-motion';
+import React, { useEffect, useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Latex from 'react-latex';
+import UniqueParticleBackground from './UniqueParticleBackground';
 
-const StartupAnimation = () => {
-  const canvasRef = useRef(null);
-  const controls = useAnimation();
+const matrixEffect = (text) => {
+  const characters = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+  let result = '';
+  const textLength = text.length;
+  for (let i = 0; i < textLength; i++) {
+    if (Math.random() > 0.7) {
+      result += characters[Math.floor(Math.random() * characters.length)];
+    } else {
+      result += text[i];
+    }
+  }
+  return result;
+};
+
+const StartupAnimation = ({ onComplete }) => {
   const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [showName, setShowName] = useState(false);
   const [decryptedText, setDecryptedText] = useState('');
   const [isExiting, setIsExiting] = useState(false);
+  const [matrixText, setMatrixText] = useState('');
+
+  const equations = useMemo(() => [
+    '\\int_0^\\infty e^{-x^2} dx',
+    'u = x^2, du = 2x dx',
+    '\\frac{1}{2} \\int_0^\\infty e^{-u} \\frac{du}{\\sqrt{u}}',
+    '\\frac{1}{2} \\Gamma(\\frac{1}{2})',
+    '\\frac{1}{2} \\sqrt{\\pi}',
+    '\\int_0^\\infty e^{-x^2} dx = \\frac{\\sqrt{\\pi}}{2}',
+    'Q.E.D. \\blacksquare'
+  ], []);
+
+  const crypticChars = useMemo(() => '!@#$%^&*()_+-=[]{}|;:,.<>?', []);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const particles = [];
-    const particleCount = 25;
-
-    class Particle {
-      constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 2 + 0.1;
-        this.speedX = Math.random() * 1 - 0.5;
-        this.speedY = Math.random() * 1 - 0.5;
-        this.color = this.getRandomColor();
-      }
-
-      getRandomColor() {
-        const colors = [
-          'rgba(255, 105, 180, 0.8)', // Hot pink
-          'rgba(147, 112, 219, 0.8)', // Medium purple
-          'rgba(138, 43, 226, 0.8)',  // Blue violet
-          'rgba(75, 0, 130, 0.8)',    // Indigo
-          'rgba(123, 104, 238, 0.8)'  // Medium slate blue
-        ];
-        return colors[Math.floor(Math.random() * colors.length)];
-      }
-
-      update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        if (this.size > 0.1) this.size -= 0.01;
-
-        if (this.x < 0 || this.x > canvas.width) this.speedX = -this.speedX;
-        if (this.y < 0 || this.y > canvas.height) this.speedY = -this.speedY;
-      }
-
-      draw() {
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    const init = () => {
-      for (let i = 0; i < particleCount; i++) {
-        particles.push(new Particle());
-      }
-    };
-
-    const animate = () => {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      particles.forEach((particle, index) => {
-        particle.update();
-        particle.draw();
-        if (particle.size <= 0.1) {
-          particles.splice(index, 1);
-          particles.push(new Particle());
-        }
-      });
-
-      requestAnimationFrame(animate);
-    };
-
-    init();
-    animate();
-
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
@@ -101,9 +56,7 @@ const StartupAnimation = () => {
             setShowName(true);
             setTimeout(() => {
               setIsExiting(true);
-              setTimeout(() => {
-                controls.start('exit');
-              }, 1000); // Wait 1 second after setting isExiting before starting exit animation
+              onComplete();
             }, 500); // Show name for 1 second before starting exit
           }, 1); // Delay name reveal
           return prev;
@@ -113,34 +66,10 @@ const StartupAnimation = () => {
     }, 4000); // Time between steps
 
     return () => {
-      cancelAnimationFrame(animate);
       clearInterval(progressInterval);
       clearInterval(stepInterval);
     };
-  }, [controls]);
-
-  const equations = [
-    '\\int_0^\\infty e^{-x^2} dx',
-    'u = x^2, du = 2x dx',
-    '\\frac{1}{2} \\int_0^\\infty e^{-u} \\frac{du}{\\sqrt{u}}',
-    '\\frac{1}{2} \\Gamma(\\frac{1}{2})',
-    '\\frac{1}{2} \\sqrt{\\pi}',
-    '\\int_0^\\infty e^{-x^2} dx = \\frac{\\sqrt{\\pi}}{2}',
-    'Q.E.D. \\blacksquare' // Added one more equation/step
-  ];
-
-  const crypticChars = '!@#$%^&*()_+-=[]{}|;:,.<>?';
-
-  const decryptText = (text, progress) => {
-    const decrypted = text.split('').map((char, index) => {
-      if (index < text.length * progress) {
-        return char;
-      } else {
-        return crypticChars[Math.floor(Math.random() * crypticChars.length)];
-      }
-    }).join('');
-    return decrypted;
-  };
+  }, [equations.length, onComplete]);
 
   useEffect(() => {
     let animationFrame;
@@ -164,10 +93,37 @@ const StartupAnimation = () => {
     return () => cancelAnimationFrame(animationFrame);
   }, [currentStep]);
 
+  useEffect(() => {
+    let interval;
+    if (progress < 100) {
+      interval = setInterval(() => {
+        setMatrixText(matrixEffect('INITIALIZING SYSTEM...'));
+      }, 50);
+    }
+    return () => clearInterval(interval);
+  }, [progress]);
+
+  const decryptText = (text, progress) => {
+    const decrypted = text.split('').map((char, index) => {
+      if (index < text.length * progress) {
+        return char;
+      } else {
+        return crypticChars[Math.floor(Math.random() * crypticChars.length)];
+      }
+    }).join('');
+    return decrypted;
+  };
+
   const containerVariants = {
     initial: { opacity: 0 },
-    animate: { opacity: 1, transition: { duration: 1 } },
-    exit: { opacity: 0, transition: { duration: 0.5 } },
+    animate: { opacity: 1 },
+    exit: { 
+      opacity: 0,
+      transition: { 
+        duration: 1,
+        ease: [0.43, 0.13, 0.23, 0.96]
+      }
+    }
   };
 
   const equationVariants = {
@@ -195,11 +151,18 @@ const StartupAnimation = () => {
       initial="initial"
       animate="animate"
       exit="exit"
-      className="fixed inset-0 z-50 bg-black flex flex-col justify-center items-center overflow-hidden"
+      className="fixed inset-0 z-50 bg-transparent flex flex-col justify-center items-center overflow-hidden"
     >
-      <canvas ref={canvasRef} className="absolute inset-0 z-0" />
-
+      <UniqueParticleBackground />
       <div className="z-10 text-white text-2xl mb-8 h-40 flex flex-col justify-center items-center">
+        <motion.div
+          className="text-green-500 font-mono text-sm mb-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          {matrixText}
+        </motion.div>
         <AnimatePresence mode="wait">
           {!isExiting && (
             <motion.div

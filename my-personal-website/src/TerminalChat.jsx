@@ -80,7 +80,7 @@ const TerminalChat = () => {
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
-      className="bg-gray-900 rounded-lg p-8 shadow-lg border border-pink-500 max-w-3xl w-full"
+      className="bg-gray-900/10 backdrop-blur-sm rounded-lg p-8 shadow-lg border border-pink-500 max-w-3xl w-full"
     >
       <div className="overflow-y-auto max-h-64 mb-4">
         {messages.map((message, index) => (
