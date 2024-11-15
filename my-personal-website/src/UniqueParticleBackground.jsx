@@ -6,10 +6,32 @@ const UniqueParticleBackground = () => {
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    
+    // Device detection
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+      || window.innerWidth < 768;
+    
+    // Adjust parameters based on device
+    const particleCount = isMobile ? 75 : 150;  // 50% reduction for mobile
+    const shootingStarCount = isMobile ? 1 : 2;
+    const baseParticleSize = isMobile ? 2 : 3;
+    const particleSpeed = isMobile ? 0.15 : 0.2; // Slower on mobile
 
-    const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+    const setCanvasSize = () => {
+      // Use device pixel ratio for sharper rendering
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      
+      // Scale canvas CSS size
+      canvas.style.width = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
+      
+      // Scale context to match device pixel ratio
+      ctx.scale(dpr, dpr);
+    };
+
+    setCanvasSize();
 
     class Star {
       constructor() {
@@ -20,15 +42,16 @@ const UniqueParticleBackground = () => {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
         this.z = Math.random() * 1500;
-        this.size = Math.random() * 3 + 0.5;
-        this.speed = Math.random() * 0.5 + 0.2;
+        this.size = Math.random() * baseParticleSize + 0.5;
+        this.speed = Math.random() * 0.3 + particleSpeed;
         this.brightness = Math.random() * 0.5 + 0.5;
- thisla200 + Math.random() * 40}, 90%, 85%, ${this.brightness})`;
+        this.color = `hsla(${200 + Math.random() * 40}, 90%, 85%, ${this.brightness})`;
       }
 
       update() {
         this.z -= this.speed * 2;
-        this.brightness += Math.sin(Date.now() * 0.001) * 0.008;
+        // Reduce pulsing intensity on mobile
+        this.brightness += Math.sin(Date.now() * 0.001) * (isMobile ? 0.004 : 0.008);
 
         if (this.z <= 0) {
           this.reset();
@@ -58,19 +81,21 @@ const UniqueParticleBackground = () => {
       reset() {
         this.x = Math.random() * canvas.width;
         this.y = 0;
-        this.length = Math.random() * 80 + 20;
-        this.speed = Math.random() * 10 + 5;
+        // Shorter trails on mobile
+        this.length = Math.random() * (isMobile ? 40 : 80) + 20;
+        this.speed = Math.random() * (isMobile ? 7 : 10) + 5;
         this.angle = Math.random() * 45 + 20;
         this.opacity = 0;
         this.fadeInTime = 50;
         this.fadeOutTime = 100;
         this.life = 0;
-        this.totalLife = Math.random() * 200 + 200;
+        // Shorter life span on mobile
+        this.totalLife = Math.random() * (isMobile ? 150 : 200) + 150;
       }
 
       update() {
         this.life++;
-
+        
         if (this.life < this.fadeInTime) {
           this.opacity = this.life / this.fadeInTime;
         } else if (this.life > this.totalLife - this.fadeOutTime) {
@@ -96,33 +121,47 @@ const UniqueParticleBackground = () => {
       }
     }
 
-    const starCount = isMobile ? 50 : 150;
-    const shootingStarCount = isMobile ? 1 : 2;
-
-    const stars = Array(starCount).fill().map(() => new Star());
+    const stars = Array(particleCount).fill().map(() => new Star());
     const shootingStars = Array(shootingStarCount).fill().map(() => new ShootingStar());
-    let time = 0;
+    
+    // Use requestAnimationFrame timestamp for smoother animation
+    let lastTime = 0;
+    const animate = (timestamp) => {
+      const deltaTime = timestamp - lastTime;
+      lastTime = timestamp;
+      
+      // Skip frame if too soon (throttle to ~60fps)
+      if (deltaTime < 16) {
+        requestAnimationFrame(animate);
+        return;
+      }
 
-    const animate = () => {
-      time += 0.016;
       ctx.fillStyle = 'rgb(10, 10, 10)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+      // Batch similar operations to reduce state changes
+      ctx.shadowBlur = 0;
+      ctx.globalAlpha = 1;
+
+      // Regular stars
       stars.forEach(star => {
         const pos = star.update();
         if (pos.x >= 0 && pos.x <= canvas.width && pos.y >= 0 && pos.y <= canvas.height) {
           ctx.beginPath();
-          ctx.arc(pos.x, pos.y, pos.size, 0, Math.PI * 2);
           ctx.fillStyle = pos.color;
-          ctx.shadowBlur = pos.size * 3;
+          ctx.shadowBlur = isMobile ? pos.size * 2 : pos.size * 3;
           ctx.shadowColor = pos.color;
           ctx.globalAlpha = pos.alpha;
+          ctx.arc(pos.x, pos.y, pos.size, 0, Math.PI * 2);
           ctx.fill();
-          ctx.globalAlpha = 1;
-          ctx.shadowBlur = 0;
         }
       });
 
+      // Reset shadow effects for better performance
+      ctx.shadowBlur = 0;
+      ctx.globalAlpha = 1;
+
+      // Shooting stars
       shootingStars.forEach(star => {
         const pos = star.update();
         if (pos.opacity > 0) {
@@ -134,9 +173,9 @@ const UniqueParticleBackground = () => {
           );
           gradient.addColorStop(0, `rgba(255, 255, 255, ${pos.opacity})`);
           gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-
+          
           ctx.strokeStyle = gradient;
-          ctx.lineWidth = 2;
+          ctx.lineWidth = isMobile ? 1 : 2;
           ctx.moveTo(pos.x, pos.y);
           ctx.lineTo(
             pos.x - pos.length * Math.cos(pos.angle * Math.PI / 180),
@@ -149,11 +188,10 @@ const UniqueParticleBackground = () => {
       requestAnimationFrame(animate);
     };
 
-    animate();
+    animate(0);
 
     const handleResize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      setCanvasSize();
     };
 
     window.addEventListener('resize', handleResize);
@@ -162,7 +200,13 @@ const UniqueParticleBackground = () => {
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="fixed inset-0 z-0" />;
+  return (
+    <canvas 
+      ref={canvasRef} 
+      className="fixed inset-0 z-0"
+      style={{ touchAction: 'none' }} // Prevents unwanted touch behaviors
+    />
+  );
 };
 
 export default UniqueParticleBackground;
