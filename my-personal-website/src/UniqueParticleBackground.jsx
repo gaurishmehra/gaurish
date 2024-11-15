@@ -9,6 +9,8 @@ const UniqueParticleBackground = () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
+    const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+
     class Star {
       constructor() {
         this.reset();
@@ -18,15 +20,15 @@ const UniqueParticleBackground = () => {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
         this.z = Math.random() * 1500;
-        this.size = Math.random() * 3 + 0.5; // Increased base size
+        this.size = Math.random() * 3 + 0.5;
         this.speed = Math.random() * 0.5 + 0.2;
-        this.brightness = Math.random() * 0.5 + 0.5; // Increased minimum brightness
-        this.color = `hsla(${200 + Math.random() * 40}, 90%, 85%, ${this.brightness})`; // Brighter color
+        this.brightness = Math.random() * 0.5 + 0.5;
+ thisla200 + Math.random() * 40}, 90%, 85%, ${this.brightness})`;
       }
 
       update() {
         this.z -= this.speed * 2;
-        this.brightness += Math.sin(Date.now() * 0.001) * 0.008; // Subtle pulsing
+        this.brightness += Math.sin(Date.now() * 0.001) * 0.008;
 
         if (this.z <= 0) {
           this.reset();
@@ -68,7 +70,7 @@ const UniqueParticleBackground = () => {
 
       update() {
         this.life++;
-        
+
         if (this.life < this.fadeInTime) {
           this.opacity = this.life / this.fadeInTime;
         } else if (this.life > this.totalLife - this.fadeOutTime) {
@@ -94,9 +96,11 @@ const UniqueParticleBackground = () => {
       }
     }
 
-    // Reduce total stars but make them more visible
-    const stars = Array(150).fill().map(() => new Star());
-    const shootingStars = Array(2).fill().map(() => new ShootingStar());
+    const starCount = isMobile ? 50 : 150;
+    const shootingStarCount = isMobile ? 1 : 2;
+
+    const stars = Array(starCount).fill().map(() => new Star());
+    const shootingStars = Array(shootingStarCount).fill().map(() => new ShootingStar());
     let time = 0;
 
     const animate = () => {
@@ -104,14 +108,13 @@ const UniqueParticleBackground = () => {
       ctx.fillStyle = 'rgb(10, 10, 10)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Regular stars
       stars.forEach(star => {
         const pos = star.update();
         if (pos.x >= 0 && pos.x <= canvas.width && pos.y >= 0 && pos.y <= canvas.height) {
           ctx.beginPath();
           ctx.arc(pos.x, pos.y, pos.size, 0, Math.PI * 2);
           ctx.fillStyle = pos.color;
-          ctx.shadowBlur = pos.size * 3; // Increased glow effect
+          ctx.shadowBlur = pos.size * 3;
           ctx.shadowColor = pos.color;
           ctx.globalAlpha = pos.alpha;
           ctx.fill();
@@ -120,7 +123,6 @@ const UniqueParticleBackground = () => {
         }
       });
 
-      // Shooting stars
       shootingStars.forEach(star => {
         const pos = star.update();
         if (pos.opacity > 0) {
@@ -132,7 +134,7 @@ const UniqueParticleBackground = () => {
           );
           gradient.addColorStop(0, `rgba(255, 255, 255, ${pos.opacity})`);
           gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-          
+
           ctx.strokeStyle = gradient;
           ctx.lineWidth = 2;
           ctx.moveTo(pos.x, pos.y);
