@@ -381,6 +381,7 @@ const Home = () => {
                 I am JEE aspirant and a self-taught full-stack developer.<br />
                 I love to make open-source projects and contribute to them.<br />
                 I am also a huge fan of Llm(s).<br />
+                The Research & Publications mentioned are currently super rough, would most probably be finished after my JEE exams.<br />
                 I currently am not looking for any job opportunities, hit me up for a cool project though.<br />
               </motion.p>
               <motion.h3
