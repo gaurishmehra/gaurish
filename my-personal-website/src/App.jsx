@@ -4,24 +4,7 @@ import { Github, Twitter, ChevronDown, ExternalLink, Send } from 'lucide-react';
 import TerminalChat from './TerminalChat';
 import StartupAnimation from './StartupAnimation';
 import ParticleBackground from './UniqueParticleBackground';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, TorusKnot, PerspectiveCamera } from '@react-three/drei';
 import UniqueParticleBackground from './UniqueParticleBackground';
-
-const research = [
-  {
-    title: "AI Agents creating AI Agents",
-    status: "In Progress",
-    description: "The idea, if done right could lead to fully autonomous AI systems that can create and improve themselves",
-    link: "#"
-  },
-  {
-    title: "Mamba V/s Transformers",
-    status: "In Progress",
-    description: "A simple Comparison between the two architectures",
-    link: "#"
-  }
-];
 
 const Home = () => {
   const [currentSection, setCurrentSection] = useState('home');
@@ -29,28 +12,12 @@ const Home = () => {
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
   const sectionsRef = useRef({});
   const [startupParticles, setStartupParticles] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleStartupComplete = (particleSystem) => {
     setStartupParticles(particleSystem);
     setIsLoading(false);
   };
-
-  const projects = useMemo(() => [
-    {
-      title: "Gaurika",
-      description: "Because I hate ChatGPT.",
-      link: "https://chat.gaurish.xyz/",
-      codeLink: "https://github.com/gaurishmehra/Gaurika",
-      image: "/Gaurika.png",
-    },
-    {
-      title: "LLm BenchMark",
-      description: "personal benchmark for popular Llm(s).[Inactive atm]",
-      link: "https://llm.gaurish.xyz/",
-      codeLink: "https://github.com/gaurishmehra/Llm_BenchMark",
-      image: "/LLm.png",
-    }
-  ], []);
 
   const stack = useMemo(() => [
     "React", "Next.js", "TypeScript", "Tailwind CSS", "Node.js", "Python", "TensorFlow", "Transformers"
@@ -79,7 +46,7 @@ const Home = () => {
     };
 
     window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Initial call to set the current section on mount
+    handleScroll();
     
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -147,8 +114,6 @@ const Home = () => {
 
     return () => clearInterval(intervalId);
   }, []);
-
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -227,54 +192,41 @@ const Home = () => {
     );
   };
 
-  const ResearchSection = () => (
+  const ProjectsSection = () => (
     <section
-      id="research"
+      id="projects"
       className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent"
-      ref={(el) => (sectionsRef.current['research'] = el)}
+      ref={(el) => (sectionsRef.current['projects'] = el)}
     >
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ duration: 1 }}
-        className="max-w-4xl w-full"
+        className="max-w-4xl w-full text-center"
       >
         <motion.h2
-          className="text-4xl font-bold mb-12 text-center bg-clip-text text-transparent bg-gradient-to-r from-slate-400 to-purple-600"
+          className="text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-600"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          Research & Publications
+          Projects & Research
         </motion.h2>
-        <div className="space-y-8">
-          {research.map((item, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.2 }}
-              className="bg-opacity-20 bg-gray-900 backdrop-filter backdrop-blur-sm rounded-lg p-6 border border-gray-700"
-            >
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="text-xl font-semibold text-purple-300">{item.title}</h3>
-                <span className={`px-3 py-1 rounded-full text-sm ${
-                  item.status === 'Published' ? 'bg-green-900 text-green-300' : 'bg-yellow-900 text-yellow-300'
-                }`}>
-                  {item.status}
-                </span>
-              </div>
-              <p className="text-gray-400 mb-4">{item.description}</p>
-              <motion.a
-                href={item.link}
-                className="text-purple-400 hover:text-purple-300 flex items-center gap-2"
-                whileHover={{ x: 5 }}
-              >
-                Read More <ExternalLink size={16} />
-              </motion.a>
-            </motion.div>
-          ))}
-        </div>
+        <motion.div
+          className="backdrop-blur-sm bg-gray-900/10 rounded-lg p-8 border border-pink-500/20"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          <p className="text-gray-300 text-lg mb-6">
+            All projects and research work are currently private as I focus on JEE preparations. 
+            Previously open-sourced projects have been temporarily made private and will be 
+            accessible again after completing my exams.
+          </p>
+          <p className="text-purple-400">
+            Stay tuned for updates post-JEE!
+          </p>
+        </motion.div>
       </motion.div>
     </section>
   );
@@ -316,7 +268,7 @@ const Home = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
-                Full Stack Dev | From India | 16yr old
+                Full Stack Dev | From India | 17yr old
               </motion.p>
               <motion.div
                 className="flex justify-center space-x-6 mb-12"
@@ -381,7 +333,6 @@ const Home = () => {
                 I am JEE aspirant and a self-taught full-stack developer.<br />
                 I love to make open-source projects and contribute to them.<br />
                 I am also a huge fan of Llm(s).<br />
-                The Research & Publications mentioned are currently super rough, would most probably be finished after my JEE exams.<br />
                 I currently am not looking for any job opportunities, hit me up for a cool project though.<br />
               </motion.p>
               <motion.h3
@@ -424,70 +375,7 @@ const Home = () => {
             <TerminalChat />
           </section>
 
-          {/* Projects Section */}
-          <section
-            id="projects"
-            className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent"
-            ref={(el) => (sectionsRef.current['projects'] = el)}
-          >
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ duration: 1 }}
-              className="max-w-6xl w-full"
-            >
-              <motion.h2
-                className="text-4xl font-bold mb-12 text-center bg-clip-text text-transparent bg-gradient-to-r from-pink-400/90 to-purple-600/90 backdrop-blur-sm"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-              >
-                Stellar Projects
-              </motion.h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 justify-center">
-                {projects.map((project, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.2 }}
-                    whileHover={{ y: -10, scale: 1.03 }}
-                    className="backdrop-blur-sm bg-gray-900/10 rounded-lg overflow-hidden shadow-lg border border-pink-500/30 cursor-pointer"
-                  >
-                    <img src={project.image} alt={project.title} className="w-full h-48 object-cover" />
-                    <div className="p-6">
-                      <h3 className="text-xl font-bold mb-2 text-pink-400">{project.title}</h3>
-                      <p className="text-gray-300 mb-4">{project.description}</p>
-                      <div className="flex justify-between">
-                        <motion.a
-                          href={project.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-purple-400 hover:text-pink-300 flex items-center transition-colors duration-200"
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                        >
-                          <ExternalLink size={16} className="mr-1" /> Launch
-                        </motion.a>
-                        <motion.a
-                          href={project.codeLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-purple-400 hover:text-pink-300 flex items-center transition-colors duration-200"
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                        >
-                          <Github size={16} className="mr-1" /> Code
-                        </motion.a>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          </section>
-
-          <ResearchSection />
+          <ProjectsSection />
 
           {/* Thoughts Section */}
           <section
@@ -521,7 +409,6 @@ const Home = () => {
                   >
                     <p className="text-gray-300">{thought}</p>
                     <div className="absolute bottom-4 right-4 text-pink-400 opacity-50">
-                      {/* Add a subtle icon or element here if desired */}
                     </div>
                   </motion.div>
                 ))}
@@ -579,7 +466,7 @@ const Home = () => {
       {/* Navigation Dots */}
       <div className="fixed right-4 md:right-8 top-1/2 transform -translate-y-1/2 z-50 backdrop-blur-sm bg-gray-900/10 rounded-full p-2">
         <div className="flex flex-col md:space-y-4 space-y-2">
-          {['home', 'about', 'terminal', 'projects', 'research', 'thoughts', 'contact'].map((section) => (
+          {['home', 'about', 'terminal', 'projects', 'thoughts', 'contact'].map((section) => (
             <motion.div
               key={section}
               className={`w-2 md:w-3 h-2 md:h-3 rounded-full cursor-pointer ${
