@@ -32,7 +32,7 @@ const Home = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollPosition = window.scrollY + window.innerHeight / 6;
+      const scrollPosition = window.scrollY + window.innerHeight / 3;
       
       const sectionEntries = Object.entries(sectionsRef.current);
       const currentSectionEntry = sectionEntries.find(([_, element]) => 
@@ -195,42 +195,67 @@ const Home = () => {
   const ProjectsSection = () => (
     <section
       id="projects"
-      className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent"
+      className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent relative z-10"
       ref={(el) => (sectionsRef.current['projects'] = el)}
     >
       <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 1 }}
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ margin: "-50% 0px -50% 0px" }} // Earlier trigger point
+        transition={{ 
+          duration: 0.8, 
+          ease: [0.16, 0.77, 0.47, 0.97], // Smooth cubic-bezier curve
+          type: "spring",
+          stiffness: 100,
+          damping: 20
+        }}
         className="max-w-4xl w-full text-center"
       >
         <motion.h2
           className="text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-600"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ 
+            duration: 0.6,
+            delay: 0.2,
+            type: "spring",
+            stiffness: 150
+          }}
+          viewport={{ margin: "0px 0px -20% 0px", once: true }}
         >
           Projects & Research
         </motion.h2>
+        
         <motion.div
           className="backdrop-blur-sm bg-gray-900/10 rounded-lg p-8 border border-pink-500/20"
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
+          transition={{
+            duration: 0.8,
+            delay: 0.4,
+            type: "spring",
+            bounce: 0.4
+          }}
+          viewport={{ margin: "0px 0px -20% 0px", once: true }}
         >
           <p className="text-gray-300 text-lg mb-6">
             All projects and research work are currently private as I focus on JEE preparations. 
             Previously open-sourced projects have been temporarily made private and will be 
             accessible again after completing my exams.
           </p>
-          <p className="text-purple-400">
+          <motion.p
+            className="text-purple-400"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+            viewport={{ once: true }}
+          >
             Stay tuned for updates post-JEE!
-          </p>
+          </motion.p>
         </motion.div>
       </motion.div>
     </section>
   );
-
   return (
     <div className="min-h-screen w-full bg-[#0a0a0a] text-white overflow-x-hidden font-mono relative">
       <UniqueParticleBackground />
@@ -241,11 +266,12 @@ const Home = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
+          className="relative z-10"
         >
           {/* Hero Section */}
           <section
             id="home"
-            className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent"
+            className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent relative z-10"
             ref={(el) => (sectionsRef.current['home'] = el)}
           >
             <motion.div
@@ -297,7 +323,7 @@ const Home = () => {
             </motion.div>
             <motion.div
               style={{ opacity }}
-              className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
+              className="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-20"
             >
               <ChevronDown size={32} className="animate-bounce text-pink-400 cursor-pointer" onClick={() => scrollToSection('about')} />
             </motion.div>
@@ -306,12 +332,13 @@ const Home = () => {
           {/* About Section */}
           <section
             id="about"
-            className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent"
+            className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent relative z-10"
             ref={(el) => (sectionsRef.current['about'] = el)}
           >
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
               transition={{ duration: 1 }}
               className="max-w-3xl text-center"
             >
@@ -319,6 +346,7 @@ const Home = () => {
                 className="text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-600"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
               >
                 About Me
@@ -327,6 +355,7 @@ const Home = () => {
                 className="text-lg text-gray-300 mb-8 leading-relaxed"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: 0.2 }}
               >
                 I am Gaurish, currently in 12th grade, studying in India.<br />
@@ -339,6 +368,7 @@ const Home = () => {
                 className="text-2xl font-semibold mb-4 text-pink-400"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
                 Celestial Tech Stack
@@ -347,6 +377,7 @@ const Home = () => {
                 className="flex flex-wrap justify-center gap-3"
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: 0.6 }}
               >
                 {stack.map((tech, index) => (
@@ -354,6 +385,7 @@ const Home = () => {
                     key={index}
                     initial={{ opacity: 0, scale: 0.5 }}
                     whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                     className="px-3 py-1 bg-purple-900 rounded-full text-sm font-medium text-pink-300 cursor-pointer"
@@ -369,7 +401,7 @@ const Home = () => {
           {/* Terminal Section */}
           <section
             id="terminal"
-            className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent"
+            className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent relative z-10"
             ref={(el) => (sectionsRef.current['terminal'] = el)}
           >
             <TerminalChat />
@@ -380,12 +412,13 @@ const Home = () => {
           {/* Thoughts Section */}
           <section
             id="thoughts"
-            className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent"
+            className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent relative z-10"
             ref={(el) => (sectionsRef.current['thoughts'] = el)}
           >
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
               transition={{ duration: 1 }}
               className="max-w-4xl w-full"
             >
@@ -393,6 +426,7 @@ const Home = () => {
                 className="text-4xl font-bold mb-12 text-center bg-clip-text text-transparent bg-gradient-to-r from-pink-400/90 to-purple-600/90 backdrop-blur-sm"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
               >
                 Thoughts / Opinions
@@ -403,6 +437,7 @@ const Home = () => {
                     key={index}
                     initial={{ opacity: 0, y: 50 }}
                     whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: index * 0.2 }}
                     className="backdrop-blur-sm bg-gray-900/10 rounded-lg p-6 shadow-lg border border-pink-500/20 relative cursor-pointer"
                     whileHover={{ scale: 1.02 }}
@@ -419,12 +454,13 @@ const Home = () => {
           {/* Contact Section */}
           <section
             id="contact"
-            className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent"
+            className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent relative z-10"
             ref={(el) => (sectionsRef.current['contact'] = el)}
           >
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
               transition={{ duration: 1 }}
               className="max-w-3xl w-full text-center"
             >
@@ -432,6 +468,7 @@ const Home = () => {
                 className="text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-600"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
               >
                 Initiate Contact
@@ -440,6 +477,7 @@ const Home = () => {
                 className="text-lg text-gray-300 mb-8"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: 0.2 }}
               >
                 Ready to embark on a cosmic coding journey together? Let's connect and explore new digital frontiers!
@@ -453,6 +491,7 @@ const Home = () => {
                 className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-pink-500/40 to-purple-600/40 backdrop-blur-sm text-white font-semibold rounded-full transition-all duration-200 hover:from-pink-600/50 hover:to-purple-700/50"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
                 <Send size={20} className="mr-2" />
