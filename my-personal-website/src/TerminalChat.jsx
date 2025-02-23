@@ -27,7 +27,7 @@ He works with many tech stacks but his most used one is "React", "Next.js", "Typ
 const TerminalChat = () => {
   const [messages, setMessages] = useState([
     { role: 'system', content: sisi },
-    { role: 'assistant', content: 'Hello! Would you like to know something about Gaurish Mehra?' },
+    { role: 'assistant', content: 'Hello! Would you like to know something about Gaurish Mehra? [DOWN ATM, WILL FIX AFTER BOARDS]' },
   ]);
   const [userInput, setUserInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
