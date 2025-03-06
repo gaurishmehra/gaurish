@@ -1,207 +1,125 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Latex from 'react-latex';
 import UniqueParticleBackground from './UniqueParticleBackground';
 
-const matrixEffect = (text) => {
-  const characters = '!@#$%^&*()_+-=[]{}|;:,.<>?';
-  let result = '';
-  const textLength = text.length;
-  for (let i = 0; i < textLength; i++) {
-    if (Math.random() > 0.7) {
-      result += characters[Math.floor(Math.random() * characters.length)];
-    } else {
-      result += text[i];
-    }
-  }
-  return result;
-};
-
 const StartupAnimation = ({ onComplete }) => {
-  const [progress, setProgress] = useState(0);
-  const [currentStep, setCurrentStep] = useState(0);
-  const [showName, setShowName] = useState(false);
-  const [decryptedText, setDecryptedText] = useState('');
-  const [isExiting, setIsExiting] = useState(false);
-  const [matrixText, setMatrixText] = useState('');
+  // Timeline stages: "expand" → galaxy expands from nothing,
+  // "explode" → galaxy explodes and stars burst out,
+  // "done" → animation complete.
+  const [stage, setStage] = useState('expand');
+  const [stars, setStars] = useState([]);
 
-  const equations = useMemo(() => [
-    '\\int_0^\\infty e^{-x^2} dx',
-    'u = x^2, du = 2x dx',
-    '\\frac{1}{2} \\int_0^\\infty e^{-u} \\frac{du}{\\sqrt{u}}',
-    '\\frac{1}{2} \\Gamma(\\frac{1}{2})',
-    '\\frac{1}{2} \\sqrt{\\pi}',
-    '\\int_0^\\infty e^{-x^2} dx = \\frac{\\sqrt{\\pi}}{2}',
-    'Q.E.D. \\blacksquare'
-  ], []);
-
-  const crypticChars = useMemo(() => '!@#$%^&*()_+-=[]{}|;:,.<>?', []);
-
+  // Transition from "expand" to "explode" after expansion is complete.
   useEffect(() => {
-    const progressInterval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(progressInterval);
-          return 100;
-        }
-        return prev + 10; // Slowed down progress even more
-      });
-    }, 100);
-
-    const stepInterval = setInterval(() => {
-      setCurrentStep((prev) => {
-        if (prev >= equations.length - 1) {
-          clearInterval(stepInterval);
-          setTimeout(() => {
-            setShowName(true);
-            setTimeout(() => {
-              setIsExiting(true);
-              onComplete();
-            }, 500); // Show name for 1 second before starting exit
-          }, 1); // Delay name reveal
-          return prev;
-        }
-        return prev + 1;
-      });
-    }, 4000); // Time between steps
-
-    return () => {
-      clearInterval(progressInterval);
-      clearInterval(stepInterval);
-    };
-  }, [equations.length, onComplete]);
-
-  useEffect(() => {
-    let animationFrame;
-    let startTime;
-    const duration = 3000; // 3 seconds for decryption
-
-    const animate = (timestamp) => {
-      if (!startTime) startTime = timestamp;
-      const elapsedTime = timestamp - startTime;
-      const progress = Math.min(elapsedTime / duration, 1);
-
-      setDecryptedText(decryptText(equations[currentStep], progress));
-
-      if (progress < 1) {
-        animationFrame = requestAnimationFrame(animate);
-      }
-    };
-
-    animationFrame = requestAnimationFrame(animate);
-
-    return () => cancelAnimationFrame(animationFrame);
-  }, [currentStep]);
-
-  useEffect(() => {
-    let interval;
-    if (progress < 100) {
-      interval = setInterval(() => {
-        setMatrixText(matrixEffect('INITIALIZING SYSTEM...'));
-      }, 50);
+    if (stage === 'expand') {
+      const timer = setTimeout(() => {
+        setStage('explode');
+      }, 1500); // 1.5s expansion duration
+      return () => clearTimeout(timer);
     }
-    return () => clearInterval(interval);
-  }, [progress]);
+  }, [stage]);
 
-  const decryptText = (text, progress) => {
-    const decrypted = text.split('').map((char, index) => {
-      if (index < text.length * progress) {
-        return char;
-      } else {
-        return crypticChars[Math.floor(Math.random() * crypticChars.length)];
+  // When the explosion begins, generate 400 stars with random trajectories.
+  useEffect(() => {
+    if (stage === 'explode') {
+      const starCount = 400;
+      const newStars = [];
+      // Use the screen diagonal to determine an off-screen endpoint.
+      const diagonal = Math.sqrt(window.innerWidth ** 2 + window.innerHeight ** 2);
+      const minDistance = diagonal / 2;
+      const maxDistance = diagonal;
+      for (let i = 0; i < starCount; i++) {
+        const angle = Math.random() * 2 * Math.PI;
+        const distance = minDistance + Math.random() * (maxDistance - minDistance);
+        newStars.push({ id: i, angle, distance });
       }
-    }).join('');
-    return decrypted;
-  };
+      setStars(newStars);
 
-  const containerVariants = {
-    initial: { opacity: 0 },
-    animate: { opacity: 1 },
-    exit: { 
-      opacity: 0,
-      transition: { 
-        duration: 1,
-        ease: [0.43, 0.13, 0.23, 0.96]
-      }
+      // After the explosion animation completes, mark the animation as done.
+      const finishTimer = setTimeout(() => {
+        setStage('done');
+        if (onComplete) onComplete();
+      }, 2000); // Explosion duration
+      return () => clearTimeout(finishTimer);
     }
-  };
+  }, [stage, onComplete]);
 
-  const equationVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.5 } },
-    exit: { opacity: 0, transition: { duration: 0.3 } },
-  };
-
-  const nameVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: { 
-      opacity: 1, 
+  // Galaxy variants for the central element.
+  const galaxyVariants = {
+    expand: {
       scale: 1,
-      transition: { 
-        duration: 0.5,
-        ease: [0.6, -0.05, 0.01, 0.99]
-      } 
+      opacity: 1,
+      transition: { duration: 1.5, ease: 'easeOut' }
     },
-    exit: { opacity: 0, transition: { duration: 0.3 } },
+    explode: {
+      scale: 6,
+      opacity: 0,
+      transition: { duration: 2, ease: 'easeOut' }
+    }
   };
+
+  // Each star starts at the center (x: 0, y: 0) and animates outward.
+  const starVariants = (finalX, finalY) => ({
+    initial: { x: 0, y: 0, opacity: 1 },
+    animate: { 
+      x: finalX, 
+      y: finalY, 
+      opacity: 0, 
+      transition: { duration: 2, ease: 'easeOut' } 
+    }
+  });
 
   return (
-    <motion.div
-      variants={containerVariants}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      className="fixed inset-0 z-50 bg-transparent flex flex-col justify-center items-center overflow-hidden"
-    >
+    <div className="fixed inset-0 z-50 flex justify-center items-center overflow-hidden bg-black">
+      {/* Dynamic background for added depth */}
       <UniqueParticleBackground />
-      <div className="z-10 text-white text-2xl mb-8 h-40 flex flex-col justify-center items-center">
-        <motion.div
-          className="text-green-500 font-mono text-sm mb-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          {matrixText}
-        </motion.div>
-        <AnimatePresence mode="wait">
-          {!isExiting && (
-            <motion.div
-              key={currentStep}
-              variants={equationVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              className="text-center"
-            >
-              <Latex>{decryptedText}</Latex>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      <div className="w-64 h-2 bg-gray-800 rounded-full overflow-hidden">
-        <motion.div
-          className="h-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500"
-          initial={{ width: 0 }}
-          animate={{ width: `${progress}%` }}
-          transition={{ duration: 0.5 }}
-        />
-      </div>
 
       <AnimatePresence>
-        {showName && (
-          <motion.h1
-            variants={nameVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className="text-5xl font-bold mt-8 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 via-purple-500 to-indigo-500"
-          >
-            Gaurish Mehra
-          </motion.h1>
+        {/* Render the galaxy element until stage becomes "done" */}
+        {stage !== 'done' && (
+          <motion.div
+            className="absolute"
+            variants={galaxyVariants}
+            initial={{ scale: 0, opacity: 0 }}
+            animate={stage === 'explode' ? 'explode' : 'expand'}
+            style={{
+              width: 200,
+              height: 200,
+              borderRadius: '50%',
+              background: `radial-gradient(
+                circle at 50% 50%, 
+                #ff66cc 0%, 
+                #a044ff 40%, 
+                #1d2b64 70%, 
+                transparent 100%
+              )`,
+              boxShadow: '0 0 40px rgba(255, 200, 255, 0.8)',
+              filter: 'blur(1px)',
+            }}
+          />
         )}
       </AnimatePresence>
-    </motion.div>
+
+      <AnimatePresence>
+        {/* Render stars only during the explosion phase */}
+        {stage === 'explode' &&
+          stars.map((star) => {
+            // Calculate each star's final position.
+            const finalX = star.distance * Math.cos(star.angle);
+            const finalY = star.distance * Math.sin(star.angle);
+            return (
+              <motion.div
+                key={star.id}
+                className="absolute rounded-full bg-white"
+                style={{ width: 2, height: 2 }}
+                variants={starVariants(finalX, finalY)}
+                initial="initial"
+                animate="animate"
+              />
+            );
+          })}
+      </AnimatePresence>
+    </div>
   );
 };
 

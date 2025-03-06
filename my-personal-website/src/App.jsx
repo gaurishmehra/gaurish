@@ -1,15 +1,85 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, useViewportScroll, useTransform } from 'framer-motion';
-import { Github, Twitter, ChevronDown, ExternalLink, Send } from 'lucide-react';
+import { Github, Twitter, ChevronDown, ChevronUp, ExternalLink, Send } from 'lucide-react';
 import TerminalChat from './TerminalChat';
 import StartupAnimation from './StartupAnimation';
-import ParticleBackground from './UniqueParticleBackground';
 import UniqueParticleBackground from './UniqueParticleBackground';
+
+// Example galaxies data for cosmic background elements
+const galaxies = [
+  { id: 1, top: '10%', left: '20%', size: '80px', color: 'rgba(255,0,150,0.6)', pulseDuration: '3', rotationDuration: '5' },
+  { id: 2, top: '40%', left: '60%', size: '100px', color: 'rgba(0,0,255,0.6)', pulseDuration: '4', rotationDuration: '6' },
+  { id: 3, top: '70%', left: '30%', size: '90px', color: 'rgba(0,255,150,0.6)', pulseDuration: '3.5', rotationDuration: '5.5' },
+];
+
+// MouseTrail component: iterative, curvy & cosmos themed
+const MouseTrail = () => {
+  const numSegments = 10;
+  // Initialize the trail positions off-screen
+  const [trail, setTrail] = useState(Array(numSegments).fill({ x: -100, y: -100 }));
+  const positionsRef = useRef(Array(numSegments).fill({ x: -100, y: -100 }));
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      // Update the first segment with the mouse position
+      positionsRef.current[0] = { x: e.clientX, y: e.clientY };
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+
+    let animationFrameId;
+
+    const updateTrail = () => {
+      // Each subsequent segment smoothly follows the previous one
+      for (let i = 1; i < numSegments; i++) {
+        const prev = positionsRef.current[i - 1];
+        const curr = positionsRef.current[i];
+        positionsRef.current[i] = {
+          x: curr.x + (prev.x - curr.x) * 0.2,
+          y: curr.y + (prev.y - curr.y) * 0.2,
+        };
+      }
+      setTrail([...positionsRef.current]);
+      animationFrameId = requestAnimationFrame(updateTrail);
+    };
+
+    animationFrameId = requestAnimationFrame(updateTrail);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [numSegments]);
+
+  return (
+    <div className="fixed top-0 left-0 pointer-events-none z-50">
+      {trail.map((pos, index) => (
+        <motion.div
+          key={index}
+          className="absolute rounded-full"
+          style={{
+            left: pos.x,
+            top: pos.y,
+            // Each segment gets slightly smaller to create a tapering effect
+            width: `${20 - index * 1.5}px`,
+            height: `${20 - index * 1.5}px`,
+            // Cosmic gradient for a nebula-like look
+            background: 'radial-gradient(circle, rgba(255,0,150,1) 0%, rgba(0,0,255,1) 100%)',
+            filter: 'blur(2px)',
+            transform: 'translate(-50%, -50%)',
+          }}
+          // A subtle rotation to add to the cosmic vibe
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
+        />
+      ))}
+    </div>
+  );
+};
 
 const Home = () => {
   const [currentSection, setCurrentSection] = useState('home');
   const { scrollYProgress } = useViewportScroll();
-  const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
   const sectionsRef = useRef({});
   const [startupParticles, setStartupParticles] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -51,34 +121,6 @@ const Home = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const generateGalaxies = (count) => {
-    const galaxies = [];
-    const colors = ['#FF1493', '#FF69B4', '#FF00FF', '#8A2BE2', '#9400D3'];
-    const minDistance = 100;
-
-    for (let i = 0; i < count; i++) {
-      let top, left, overlapping;
-      do {
-        top = Math.random() * 100;
-        left = Math.random() * 100;
-        overlapping = galaxies.some(g => 
-          Math.hypot(g.top - top, g.left - left) < minDistance
-        );
-      } while (overlapping);
-
-      galaxies.push({
-        id: i,
-        top: `${top}%`,
-        left: `${left}%`,
-        size: `${Math.random() * 150 + 50}px`,
-        rotationDuration: `${Math.random() * 100 + 50}s`,
-        pulseDuration: `${Math.random() * 3 + 2}s`,
-        color: colors[Math.floor(Math.random() * colors.length)]
-      });
-    }
-    return galaxies;
-  };
-
   const generateShootingStars = (count) => {
     return Array.from({ length: count }, (_, i) => ({
       id: i,
@@ -104,16 +146,6 @@ const Home = () => {
       });
     }
   };
-
-  const [galaxies, setGalaxies] = useState(generateGalaxies(3));
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setGalaxies(generateGalaxies(3));
-    }, 30000);
-
-    return () => clearInterval(intervalId);
-  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -198,64 +230,62 @@ const Home = () => {
       className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent relative z-10"
       ref={(el) => (sectionsRef.current['projects'] = el)}
     >
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ margin: "-50% 0px -50% 0px" }} // Earlier trigger point
-        transition={{ 
-          duration: 0.8, 
-          ease: [0.16, 0.77, 0.47, 0.97], // Smooth cubic-bezier curve
-          type: "spring",
-          stiffness: 100,
-          damping: 20
-        }}
-        className="max-w-4xl w-full text-center"
-      >
+      <motion.div className="max-w-4xl w-full text-center">
         <motion.h2
           className="text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-600"
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ 
-            duration: 0.6,
-            delay: 0.2,
-            type: "spring",
-            stiffness: 150
-          }}
-          viewport={{ margin: "0px 0px -20% 0px", once: true }}
         >
           Projects & Research
         </motion.h2>
         
         <motion.div
           className="backdrop-blur-sm bg-gray-900/10 rounded-lg p-8 border border-pink-500/20"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: 0.8,
-            delay: 0.4,
-            type: "spring",
-            bounce: 0.4
-          }}
-          viewport={{ margin: "0px 0px -20% 0px", once: true }}
         >
           <p className="text-gray-300 text-lg mb-6">
             All projects and research work are currently private as I focus on JEE preparations. 
             Previously open-sourced projects have been temporarily made private and will be 
             accessible again after completing my exams.
           </p>
-          <motion.p
-            className="text-purple-400"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-            viewport={{ once: true }}
-          >
+          <motion.p>
             Stay tuned for updates post-JEE!
           </motion.p>
         </motion.div>
       </motion.div>
     </section>
   );
+
+  // NavigationArrows component: always rendered with Up and Down buttons
+  const NavigationArrows = () => {
+    const sectionsOrder = ['home', 'about', 'terminal', 'projects', 'thoughts', 'contact'];
+    const currentIndex = sectionsOrder.indexOf(currentSection);
+
+    const handleUp = () => {
+      if (currentIndex > 0) {
+        scrollToSection(sectionsOrder[currentIndex - 1]);
+      }
+    };
+
+    const handleDown = () => {
+      if (currentIndex < sectionsOrder.length - 1) {
+        scrollToSection(sectionsOrder[currentIndex + 1]);
+      }
+    };
+
+    return (
+      <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 z-50 flex space-x-6">
+        {currentIndex > 0 && (
+          <motion.div onClick={handleUp} className="cursor-pointer">
+            <ChevronUp size={32} className="text-pink-400 hover:text-purple-400" />
+          </motion.div>
+        )}
+        {currentIndex < sectionsOrder.length - 1 && (
+          <motion.div onClick={handleDown} className="cursor-pointer">
+            <ChevronDown size={32} className="text-pink-400 hover:text-purple-400" />
+          </motion.div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen w-full bg-[#0a0a0a] text-white overflow-x-hidden font-mono relative">
       <UniqueParticleBackground />
@@ -320,12 +350,6 @@ const Home = () => {
                   </motion.a>
                 ))}
               </motion.div>
-            </motion.div>
-            <motion.div
-              style={{ opacity }}
-              className="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-20"
-            >
-              <ChevronDown size={32} className="animate-bounce text-pink-400 cursor-pointer" onClick={() => scrollToSection('about')} />
             </motion.div>
           </section>
 
@@ -443,8 +467,6 @@ const Home = () => {
                     whileHover={{ scale: 1.02 }}
                   >
                     <p className="text-gray-300">{thought}</p>
-                    <div className="absolute bottom-4 right-4 text-pink-400 opacity-50">
-                    </div>
                   </motion.div>
                 ))}
               </div>
@@ -499,6 +521,13 @@ const Home = () => {
               </motion.a>
             </motion.div>
           </section>
+
+          {/* Navigation Arrows (Up & Down) always visible */}
+          <NavigationArrows />
+
+          {/* Mouse Trail */}
+          <MouseTrail />
+
         </motion.div>
       )}
       

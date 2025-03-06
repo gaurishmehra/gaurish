@@ -38,7 +38,7 @@ const TerminalChat = () => {
   const openai = new OpenAI({
     apiKey: OPENAI_API_KEY,
     dangerouslyAllowBrowser: true,
-    baseURL: "https://proxy.gaurish.xyz/api/cerebras/v1",
+    baseURL: "https://terminalchat.gaurish.one/api/cerebras/v1",
   });
 
   const handleSubmit = async (e) => {
