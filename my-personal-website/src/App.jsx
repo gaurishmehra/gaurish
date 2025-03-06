@@ -1,36 +1,33 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { motion, useViewportScroll, useTransform } from 'framer-motion';
-import { Github, Twitter, ChevronDown, ChevronUp, ExternalLink, Send } from 'lucide-react';
+import { motion, useViewportScroll } from 'framer-motion';
+import { Github, Twitter, ChevronDown, ChevronUp, Send } from 'lucide-react';
 import TerminalChat from './TerminalChat';
 import StartupAnimation from './StartupAnimation';
 import UniqueParticleBackground from './UniqueParticleBackground';
 
-// Example galaxies data for cosmic background elements
-const galaxies = [
-  { id: 1, top: '10%', left: '20%', size: '80px', color: 'rgba(255,0,150,0.6)', pulseDuration: '3', rotationDuration: '5' },
-  { id: 2, top: '40%', left: '60%', size: '100px', color: 'rgba(0,0,255,0.6)', pulseDuration: '4', rotationDuration: '6' },
-  { id: 3, top: '70%', left: '30%', size: '90px', color: 'rgba(0,255,150,0.6)', pulseDuration: '3.5', rotationDuration: '5.5' },
-];
 
-// MouseTrail component: iterative, curvy & cosmos themed
 const MouseTrail = () => {
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
   const numSegments = 10;
-  // Initialize the trail positions off-screen
   const [trail, setTrail] = useState(Array(numSegments).fill({ x: -100, y: -100 }));
   const positionsRef = useRef(Array(numSegments).fill({ x: -100, y: -100 }));
 
   useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (!isDesktop) return;
     const handleMouseMove = (e) => {
-      // Update the first segment with the mouse position
       positionsRef.current[0] = { x: e.clientX, y: e.clientY };
     };
-
     window.addEventListener('mousemove', handleMouseMove);
-
     let animationFrameId;
-
     const updateTrail = () => {
-      // Each subsequent segment smoothly follows the previous one
       for (let i = 1; i < numSegments; i++) {
         const prev = positionsRef.current[i - 1];
         const curr = positionsRef.current[i];
@@ -42,17 +39,17 @@ const MouseTrail = () => {
       setTrail([...positionsRef.current]);
       animationFrameId = requestAnimationFrame(updateTrail);
     };
-
     animationFrameId = requestAnimationFrame(updateTrail);
-
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [numSegments]);
+  }, [isDesktop, numSegments]);
+
+  if (!isDesktop) return null;
 
   return (
-    <div className="fixed top-0 left-0 pointer-events-none z-50">
+    <div className="fixed top-0 left-0 pointer-events-none z-0">
       {trail.map((pos, index) => (
         <motion.div
           key={index}
@@ -60,15 +57,12 @@ const MouseTrail = () => {
           style={{
             left: pos.x,
             top: pos.y,
-            // Each segment gets slightly smaller to create a tapering effect
             width: `${20 - index * 1.5}px`,
             height: `${20 - index * 1.5}px`,
-            // Cosmic gradient for a nebula-like look
             background: 'radial-gradient(circle, rgba(255,0,150,1) 0%, rgba(0,0,255,1) 100%)',
             filter: 'blur(2px)',
             transform: 'translate(-50%, -50%)',
           }}
-          // A subtle rotation to add to the cosmic vibe
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
         />
@@ -103,21 +97,17 @@ const Home = () => {
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY + window.innerHeight / 3;
-      
       const sectionEntries = Object.entries(sectionsRef.current);
-      const currentSectionEntry = sectionEntries.find(([_, element]) => 
-        element.offsetTop <= scrollPosition && 
+      const currentSectionEntry = sectionEntries.find(([_, element]) =>
+        element.offsetTop <= scrollPosition &&
         element.offsetTop + element.offsetHeight > scrollPosition
       );
-
       if (currentSectionEntry) {
         setCurrentSection(currentSectionEntry[0]);
       }
     };
-
     window.addEventListener('scroll', handleScroll);
     handleScroll();
-    
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -139,7 +129,6 @@ const Home = () => {
       const offset = window.innerHeight / 100;
       const elementPosition = section.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - offset;
-
       window.scrollTo({
         top: offsetPosition,
         behavior: 'smooth'
@@ -151,20 +140,16 @@ const Home = () => {
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 3000);
-
     return () => clearTimeout(timer);
   }, []);
 
   const Background = () => {
     useEffect(() => {
       if (startupParticles) {
-        const mergeParticles = () => {
-          // Merge animation logic
-        };
+        const mergeParticles = () => {};
         mergeParticles();
       }
     }, [startupParticles]);
-
     return (
       <>
         <div className="fixed inset-0 z-0">
@@ -225,21 +210,12 @@ const Home = () => {
   };
 
   const ProjectsSection = () => (
-    <section
-      id="projects"
-      className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent relative z-10"
-      ref={(el) => (sectionsRef.current['projects'] = el)}
-    >
+    <section id="projects" className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent relative z-10" ref={(el) => (sectionsRef.current['projects'] = el)}>
       <motion.div className="max-w-4xl w-full text-center">
-        <motion.h2
-          className="text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-600"
-        >
+        <motion.h2 className="text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-600">
           Projects & Research
         </motion.h2>
-        
-        <motion.div
-          className="backdrop-blur-sm bg-gray-900/10 rounded-lg p-8 border border-pink-500/20"
-        >
+        <motion.div className="backdrop-blur-sm bg-gray-900/10 rounded-lg p-8 border border-pink-500/20">
           <p className="text-gray-300 text-lg mb-6">
             All projects and research work are currently private as I focus on JEE preparations. 
             Previously open-sourced projects have been temporarily made private and will be 
@@ -253,23 +229,19 @@ const Home = () => {
     </section>
   );
 
-  // NavigationArrows component: always rendered with Up and Down buttons
   const NavigationArrows = () => {
     const sectionsOrder = ['home', 'about', 'terminal', 'projects', 'thoughts', 'contact'];
     const currentIndex = sectionsOrder.indexOf(currentSection);
-
     const handleUp = () => {
       if (currentIndex > 0) {
         scrollToSection(sectionsOrder[currentIndex - 1]);
       }
     };
-
     const handleDown = () => {
       if (currentIndex < sectionsOrder.length - 1) {
         scrollToSection(sectionsOrder[currentIndex + 1]);
       }
     };
-
     return (
       <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 z-50 flex space-x-6">
         {currentIndex > 0 && (
@@ -289,29 +261,15 @@ const Home = () => {
   return (
     <div className="min-h-screen w-full bg-[#0a0a0a] text-white overflow-x-hidden font-mono relative">
       <UniqueParticleBackground />
+      <MouseTrail />
       {isLoading ? (
         <StartupAnimation onComplete={handleStartupComplete} />
       ) : (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-          className="relative z-10"
-        >
-          {/* Hero Section */}
-          <section
-            id="home"
-            className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent relative z-10"
-            ref={(el) => (sectionsRef.current['home'] = el)}
-          >
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1 }}
-              className="text-center"
-            >
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }} className="relative z-10">
+          <section id="home" className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent relative z-10" ref={(el) => (sectionsRef.current['home'] = el)}>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }} className="text-center">
               <motion.h1
-                className="text-5xl md:text-7xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-600"
+                className="text-4xl md:text-7xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-600"
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
@@ -319,20 +277,15 @@ const Home = () => {
                 Gaurish Mehra
               </motion.h1>
               <motion.p
-                className="text-xl md:text-2xl text-gray-300 mb-8"
+                className="text-lg md:text-2xl text-gray-300 mb-8"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
                 Full Stack Dev | From India | 17yr old
               </motion.p>
-              <motion.div
-                className="flex justify-center space-x-6 mb-12"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.6 }}
-              >
-                {['github','twitter'].map((platform, index) => (
+              <motion.div className="flex justify-center space-x-6 mb-12" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.6 }}>
+                {['github', 'twitter'].map((platform, index) => (
                   <motion.a
                     key={platform}
                     href={`https://${platform}.com/gaurishmehra`}
@@ -352,20 +305,8 @@ const Home = () => {
               </motion.div>
             </motion.div>
           </section>
-
-          {/* About Section */}
-          <section
-            id="about"
-            className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent relative z-10"
-            ref={(el) => (sectionsRef.current['about'] = el)}
-          >
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1 }}
-              className="max-w-3xl text-center"
-            >
+          <section id="about" className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent relative z-10" ref={(el) => (sectionsRef.current['about'] = el)}>
+            <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 1 }} className="max-w-3xl text-center">
               <motion.h2
                 className="text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-600"
                 initial={{ opacity: 0, y: 20 }}
@@ -383,7 +324,7 @@ const Home = () => {
                 transition={{ duration: 0.8, delay: 0.2 }}
               >
                 I am Gaurish, currently in 12th grade, studying in India.<br />
-                I am JEE aspirant and a self-taught full-stack developer.<br />
+                I am a JEE aspirant and a self-taught full-stack developer.<br />
                 I love to make open-source projects and contribute to them.<br />
                 I am also a huge fan of Llm(s).<br />
                 I currently am not looking for any job opportunities, hit me up for a cool project though.<br />
@@ -397,13 +338,7 @@ const Home = () => {
               >
                 Celestial Tech Stack
               </motion.h3>
-              <motion.div
-                className="flex flex-wrap justify-center gap-3"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.6 }}
-              >
+              <motion.div className="flex flex-wrap justify-center gap-3" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.6 }}>
                 {stack.map((tech, index) => (
                   <motion.span
                     key={index}
@@ -421,31 +356,12 @@ const Home = () => {
               </motion.div>
             </motion.div>
           </section>
-
-          {/* Terminal Section */}
-          <section
-            id="terminal"
-            className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent relative z-10"
-            ref={(el) => (sectionsRef.current['terminal'] = el)}
-          >
+          <section id="terminal" className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent relative z-10" ref={(el) => (sectionsRef.current['terminal'] = el)}>
             <TerminalChat />
           </section>
-
           <ProjectsSection />
-
-          {/* Thoughts Section */}
-          <section
-            id="thoughts"
-            className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent relative z-10"
-            ref={(el) => (sectionsRef.current['thoughts'] = el)}
-          >
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1 }}
-              className="max-w-4xl w-full"
-            >
+          <section id="thoughts" className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent relative z-10" ref={(el) => (sectionsRef.current['thoughts'] = el)}>
+            <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 1 }} className="max-w-4xl w-full">
               <motion.h2
                 className="text-4xl font-bold mb-12 text-center bg-clip-text text-transparent bg-gradient-to-r from-pink-400/90 to-purple-600/90 backdrop-blur-sm"
                 initial={{ opacity: 0, y: 20 }}
@@ -472,20 +388,8 @@ const Home = () => {
               </div>
             </motion.div>
           </section>
-
-          {/* Contact Section */}
-          <section
-            id="contact"
-            className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent relative z-10"
-            ref={(el) => (sectionsRef.current['contact'] = el)}
-          >
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1 }}
-              className="max-w-3xl w-full text-center"
-            >
+          <section id="contact" className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent relative z-10" ref={(el) => (sectionsRef.current['contact'] = el)}>
+            <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 1 }} className="max-w-3xl w-full text-center">
               <motion.h2
                 className="text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-600"
                 initial={{ opacity: 0, y: 20 }}
@@ -521,32 +425,22 @@ const Home = () => {
               </motion.a>
             </motion.div>
           </section>
-
-          {/* Navigation Arrows (Up & Down) always visible */}
           <NavigationArrows />
-
-          {/* Mouse Trail */}
-          <MouseTrail />
-
+          <div className="hidden md:block fixed right-4 md:right-8 top-1/2 transform -translate-y-1/2 z-50 backdrop-blur-sm bg-gray-900/10 rounded-full p-2">
+            <div className="flex flex-col md:space-y-4 space-y-2">
+              {['home', 'about', 'terminal', 'projects', 'thoughts', 'contact'].map((section) => (
+                <motion.div
+                  key={section}
+                  className={`w-2 md:w-3 h-2 md:h-3 rounded-full cursor-pointer ${currentSection === section ? 'bg-pink-500' : 'bg-gray-600'}`}
+                  whileHover={{ scale: 1.5 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => scrollToSection(section)}
+                />
+              ))}
+            </div>
+          </div>
         </motion.div>
       )}
-      
-      {/* Navigation Dots */}
-      <div className="fixed right-4 md:right-8 top-1/2 transform -translate-y-1/2 z-50 backdrop-blur-sm bg-gray-900/10 rounded-full p-2">
-        <div className="flex flex-col md:space-y-4 space-y-2">
-          {['home', 'about', 'terminal', 'projects', 'thoughts', 'contact'].map((section) => (
-            <motion.div
-              key={section}
-              className={`w-2 md:w-3 h-2 md:h-3 rounded-full cursor-pointer ${
-                currentSection === section ? 'bg-pink-500' : 'bg-gray-600'
-              }`}
-              whileHover={{ scale: 1.5 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => scrollToSection(section)}
-            />
-          ))}
-        </div>
-      </div>
     </div>
   );
 };

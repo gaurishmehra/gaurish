@@ -96,7 +96,7 @@ const UniqueParticleBackground = () => {
     }
 
     // Increase the number of stars and shooting stars for an immersive tunnel
-    const starCount = isMobile ? 50 : 500;
+    const starCount = isMobile ? 75 : 500;
     const shootingStarCount = isMobile ? 3 : 8;
 
     const stars = Array(starCount).fill().map(() => new Star());
