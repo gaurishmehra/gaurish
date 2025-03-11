@@ -4,6 +4,16 @@ import {
   ChevronDown, ChevronRight, FileCode, Folder, 
   File, Terminal, RefreshCw, AlertCircle, Github, Copy
 } from 'lucide-react';
+// Import Prism for syntax highlighting
+import Prism from 'prismjs';
+import 'prismjs/themes/prism-tomorrow.css';
+// Load additional languages
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-typescript';
+import 'prismjs/components/prism-css';
+import 'prismjs/components/prism-markup'; // for HTML
+import 'prismjs/components/prism-json';
+import 'prismjs/components/prism-markdown';
 
 const VSCodeInterface = ({ isOpen, onClose }) => {
   // GitHub repo config - fixed in code
@@ -321,7 +331,7 @@ const VSCodeInterface = ({ isOpen, onClose }) => {
     }
   });
 
-  // Memoize file content rendering for better performance
+  // Memoize file content rendering for better performance and add syntax highlighting
   const CodeEditor = useMemo(() => {
     if (isLoading) {
       return (
@@ -351,7 +361,8 @@ const VSCodeInterface = ({ isOpen, onClose }) => {
       );
     }
     
-    // Process file content to add line numbers and cursor
+    // Process file content into highlighted lines with line numbers and a blinking cursor.
+    // Using Prism.highlight to transform each line into HTML.
     const lines = fileContent.split('\n');
     return (
       <div 
@@ -370,25 +381,30 @@ const VSCodeInterface = ({ isOpen, onClose }) => {
             ))}
           </div>
           
-          {/* Code content with cursor */}
+          {/* Code content with syntax highlighting and cursor */}
           <div className="flex-1 relative">
-            {lines.map((line, i) => (
-              <div key={i} className="h-[1.5rem] relative whitespace-pre">
-                {line || " "}
-                
-                {/* Render blinking cursor at the right position */}
-                {cursorPosition.line === i + 1 && (
-                  <span 
-                    className="absolute h-[1.5rem] w-[2px] bg-white animate-pulse" 
-                    style={{ 
-                      left: `${cursorPosition.column * 0.6}ch`, // Approximate character width
-                      animationDuration: '1s',
-                      animationTimingFunction: 'steps(1)',
-                    }}
-                  ></span>
-                )}
-              </div>
-            ))}
+            {lines.map((line, i) => {
+              // Map file type to Prism language (for HTML, Prism uses "markup")
+              const prismLanguage = currentFile.type === 'html' ? 'markup' : currentFile.type;
+              const highlighted = line
+                ? Prism.highlight(line, Prism.languages[prismLanguage] || Prism.languages.plaintext, prismLanguage)
+                : ' ';
+              return (
+                <div key={i} className="h-[1.5rem] relative whitespace-pre">
+                  <span dangerouslySetInnerHTML={{ __html: highlighted }} />
+                  {cursorPosition.line === i + 1 && (
+                    <span 
+                      className="absolute h-[1.5rem] w-[2px] bg-white animate-pulse" 
+                      style={{ 
+                        left: `${cursorPosition.column * 0.6}ch`, // Approximate character width
+                        animationDuration: '1s',
+                        animationTimingFunction: 'steps(1)',
+                      }}
+                    ></span>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
