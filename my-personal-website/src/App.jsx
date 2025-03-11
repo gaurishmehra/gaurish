@@ -1,75 +1,20 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { motion, useViewportScroll } from 'framer-motion';
-import { Github, Twitter, ChevronDown, ChevronUp, Send } from 'lucide-react';
-import TerminalChat from './TerminalChat';
-import StartupAnimation from './StartupAnimation';
-import UniqueParticleBackground from './UniqueParticleBackground';
+import { useViewportScroll } from 'framer-motion';
+import { motion } from 'framer-motion';
+import StartupAnimation from './components/StartupAnimation';
+import MouseTrail from './components/MouseTrail';
+import Background from './components/Background';
+import NavigationArrows from './components/NavigationArrows';
+import Navigation from './components/Navigation';
+import VSCodeButton from './components/VSCodeButton';
+import VSCodeInterface from './components/VSCodeInterface';
 
-
-const MouseTrail = () => {
-  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
-  const numSegments = 10;
-  const [trail, setTrail] = useState(Array(numSegments).fill({ x: -100, y: -100 }));
-  const positionsRef = useRef(Array(numSegments).fill({ x: -100, y: -100 }));
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsDesktop(window.innerWidth >= 768);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
-    if (!isDesktop) return;
-    const handleMouseMove = (e) => {
-      positionsRef.current[0] = { x: e.clientX, y: e.clientY };
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    let animationFrameId;
-    const updateTrail = () => {
-      for (let i = 1; i < numSegments; i++) {
-        const prev = positionsRef.current[i - 1];
-        const curr = positionsRef.current[i];
-        positionsRef.current[i] = {
-          x: curr.x + (prev.x - curr.x) * 0.2,
-          y: curr.y + (prev.y - curr.y) * 0.2,
-        };
-      }
-      setTrail([...positionsRef.current]);
-      animationFrameId = requestAnimationFrame(updateTrail);
-    };
-    animationFrameId = requestAnimationFrame(updateTrail);
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, [isDesktop, numSegments]);
-
-  if (!isDesktop) return null;
-
-  return (
-    <div className="fixed top-0 left-0 pointer-events-none z-0">
-      {trail.map((pos, index) => (
-        <motion.div
-          key={index}
-          className="absolute rounded-full"
-          style={{
-            left: pos.x,
-            top: pos.y,
-            width: `${20 - index * 1.5}px`,
-            height: `${20 - index * 1.5}px`,
-            background: 'radial-gradient(circle, rgba(255,0,150,1) 0%, rgba(0,0,255,1) 100%)',
-            filter: 'blur(2px)',
-            transform: 'translate(-50%, -50%)',
-          }}
-          animate={{ rotate: 360 }}
-          transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
-        />
-      ))}
-    </div>
-  );
-};
+// Import sections
+import HomeSection from './components/sections/HomeSection';
+import AboutSection from './components/sections/AboutSection';
+import ProjectsSection from './components/sections/ProjectsSection';
+import ThoughtsSection from './components/sections/ThoughtsSection';
+import ContactSection from './components/sections/ContactSection';
 
 const Home = () => {
   const [currentSection, setCurrentSection] = useState('home');
@@ -77,6 +22,8 @@ const Home = () => {
   const sectionsRef = useRef({});
   const [startupParticles, setStartupParticles] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isVSCodeOpen, setIsVSCodeOpen] = useState(false);
+  const [showMobilePopup, setShowMobilePopup] = useState(false);
 
   const handleStartupComplete = (particleSystem) => {
     setStartupParticles(particleSystem);
@@ -94,6 +41,10 @@ const Home = () => {
     "Among the 3 JEE subjects, the only one that sucks is Chemistry. Physics and Maths are fun.",
   ], []);
 
+  const setRef = (id, el) => {
+    sectionsRef.current[id] = el;
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY + window.innerHeight / 3;
@@ -110,18 +61,6 @@ const Home = () => {
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const generateShootingStars = (count) => {
-    return Array.from({ length: count }, (_, i) => ({
-      id: i,
-      top: `${Math.random() * 100}%`,
-      left: `${Math.random() * 100}%`,
-      animationDuration: `${Math.random() * 3 + 1}s`,
-      animationDelay: `${Math.random() * 5}s`,
-      size: `${Math.random() * 3 + 1}px`,
-      angle: Math.random() * 360
-    }));
-  };
 
   const scrollToSection = (sectionId) => {
     const section = sectionsRef.current[sectionId];
@@ -143,303 +82,57 @@ const Home = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const Background = () => {
-    useEffect(() => {
-      if (startupParticles) {
-        const mergeParticles = () => {};
-        mergeParticles();
-      }
-    }, [startupParticles]);
-    return (
-      <>
-        <div className="fixed inset-0 z-0">
-          <div className="absolute inset-0 bg-[#0a0a0a]" />
-          {galaxies.map((galaxy) => (
-            <motion.div
-              key={galaxy.id}
-              className="absolute rounded-full mix-blend-screen filter blur-sm"
-              style={{
-                top: galaxy.top,
-                left: galaxy.left,
-                width: galaxy.size,
-                height: galaxy.size,
-                backgroundColor: galaxy.color,
-              }}
-              initial={{ opacity: 0, scale: 0.5, rotate: 0 }}
-              animate={{ 
-                opacity: [0.5, 0.8, 0.5], 
-                scale: [1, 1.2, 1],
-                rotate: 360
-              }}
-              transition={{ 
-                opacity: { duration: parseFloat(galaxy.pulseDuration), repeat: Infinity },
-                scale: { duration: parseFloat(galaxy.pulseDuration), repeat: Infinity },
-                rotate: { duration: parseFloat(galaxy.rotationDuration), repeat: Infinity, ease: "linear" }
-              }}
-            />
-          ))}
-          {generateShootingStars(5).map((star) => (
-            <motion.div
-              key={star.id}
-              className="absolute bg-white rounded-full"
-              style={{
-                top: star.top,
-                left: star.left,
-                width: star.size,
-                height: star.size,
-                transform: `rotate(${star.angle}deg)`
-              }}
-              initial={{ opacity: 0, x: 0, y: 0 }}
-              animate={{ 
-                opacity: [0, 1, 0],
-                x: `-${Math.cos(star.angle * Math.PI / 180) * 100}vw`,
-                y: `${Math.sin(star.angle * Math.PI / 180) * 100}vh`
-              }}
-              transition={{ 
-                duration: parseFloat(star.animationDuration),
-                delay: parseFloat(star.animationDelay),
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
-          ))}
-        </div>
-        <UniqueParticleBackground />
-      </>
-    );
-  };
+  // Detect mobile devices and show popup if applicable
+  useEffect(() => {
+    if (typeof navigator !== 'undefined' && /Mobi|Android/i.test(navigator.userAgent)) {
+      setShowMobilePopup(true);
+    }
+  }, []);
 
-  const ProjectsSection = () => (
-    <section id="projects" className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent relative z-10" ref={(el) => (sectionsRef.current['projects'] = el)}>
-      <motion.div className="max-w-4xl w-full text-center">
-        <motion.h2 className="text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-600">
-          Projects & Research
-        </motion.h2>
-        <motion.div className="backdrop-blur-sm bg-gray-900/10 rounded-lg p-8 border border-pink-500/20">
-          <p className="text-gray-300 text-lg mb-6">
-            All projects and research work are currently private as I focus on JEE preparations. 
-            Previously open-sourced projects have been temporarily made private and will be 
-            accessible again after completing my exams.
-          </p>
-          <motion.p>
-            Stay tuned for updates post-JEE!
-          </motion.p>
-        </motion.div>
-      </motion.div>
-    </section>
-  );
-
-  const NavigationArrows = () => {
-    const sectionsOrder = ['home', 'about', 'terminal', 'projects', 'thoughts', 'contact'];
-    const currentIndex = sectionsOrder.indexOf(currentSection);
-    const handleUp = () => {
-      if (currentIndex > 0) {
-        scrollToSection(sectionsOrder[currentIndex - 1]);
-      }
-    };
-    const handleDown = () => {
-      if (currentIndex < sectionsOrder.length - 1) {
-        scrollToSection(sectionsOrder[currentIndex + 1]);
-      }
-    };
-    return (
-      <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 z-50 flex space-x-6">
-        {currentIndex > 0 && (
-          <motion.div onClick={handleUp} className="cursor-pointer">
-            <ChevronUp size={32} className="text-pink-400 hover:text-purple-400" />
-          </motion.div>
-        )}
-        {currentIndex < sectionsOrder.length - 1 && (
-          <motion.div onClick={handleDown} className="cursor-pointer">
-            <ChevronDown size={32} className="text-pink-400 hover:text-purple-400" />
-          </motion.div>
-        )}
-      </div>
-    );
+  const toggleVSCode = () => {
+    setIsVSCodeOpen(!isVSCodeOpen);
   };
 
   return (
     <div className="min-h-screen w-full bg-[#0a0a0a] text-white overflow-x-hidden font-mono relative">
-      <UniqueParticleBackground />
-      <MouseTrail />
+      <Background startupParticles={startupParticles} />
+
+      {/* Render MouseTrail only when VSCode is closed */}
+      {!isVSCodeOpen && <MouseTrail />}
+
+      <VSCodeButton onClick={toggleVSCode} />
+      <VSCodeInterface isOpen={isVSCodeOpen} onClose={() => setIsVSCodeOpen(false)} />
+      
       {isLoading ? (
         <StartupAnimation onComplete={handleStartupComplete} />
       ) : (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }} className="relative z-10">
-          <section id="home" className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent relative z-10" ref={(el) => (sectionsRef.current['home'] = el)}>
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }} className="text-center">
-              <motion.h1
-                className="text-4xl md:text-7xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-600"
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-              >
-                Gaurish Mehra
-              </motion.h1>
-              <motion.p
-                className="text-lg md:text-2xl text-gray-300 mb-8"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-              >
-                Full Stack Dev | From India | 17yr old
-              </motion.p>
-              <motion.div className="flex justify-center space-x-6 mb-12" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.6 }}>
-                {['github', 'twitter'].map((platform, index) => (
-                  <motion.a
-                    key={platform}
-                    href={`https://${platform}.com/gaurishmehra`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    whileTap={{ scale: 0.95 }}
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 0.8 + index * 0.1 }}
-                    className="text-pink-400 hover:text-purple-400 transition-colors duration-200"
-                  >
-                    {platform === 'github' && <Github size={28} />}
-                    {platform === 'twitter' && <Twitter size={28} />}
-                  </motion.a>
-                ))}
-              </motion.div>
-            </motion.div>
-          </section>
-          <section id="about" className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent relative z-10" ref={(el) => (sectionsRef.current['about'] = el)}>
-            <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 1 }} className="max-w-3xl text-center">
-              <motion.h2
-                className="text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-600"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-              >
-                About Me
-              </motion.h2>
-              <motion.p
-                className="text-lg text-gray-300 mb-8 leading-relaxed"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-              >
-                I am Gaurish, currently in 12th grade, studying in India.<br />
-                I am a JEE aspirant and a self-taught full-stack developer.<br />
-                I love to make open-source projects and contribute to them.<br />
-                I am also a huge fan of Llm(s).<br />
-                I currently am not looking for any job opportunities, hit me up for a cool project though.<br />
-              </motion.p>
-              <motion.h3
-                className="text-2xl font-semibold mb-4 text-pink-400"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-              >
-                Celestial Tech Stack
-              </motion.h3>
-              <motion.div className="flex flex-wrap justify-center gap-3" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.6 }}>
-                {stack.map((tech, index) => (
-                  <motion.span
-                    key={index}
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="px-3 py-1 bg-purple-900 rounded-full text-sm font-medium text-pink-300 cursor-pointer"
-                    onClick={() => window.open(`https://www.google.com/search?q=${tech}`, "_blank")}
-                  >
-                    {tech}
-                  </motion.span>
-                ))}
-              </motion.div>
-            </motion.div>
-          </section>
-          <section id="terminal" className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent relative z-10" ref={(el) => (sectionsRef.current['terminal'] = el)}>
-            <TerminalChat />
-          </section>
-          <ProjectsSection />
-          <section id="thoughts" className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent relative z-10" ref={(el) => (sectionsRef.current['thoughts'] = el)}>
-            <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 1 }} className="max-w-4xl w-full">
-              <motion.h2
-                className="text-4xl font-bold mb-12 text-center bg-clip-text text-transparent bg-gradient-to-r from-pink-400/90 to-purple-600/90 backdrop-blur-sm"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-              >
-                Thoughts / Opinions
-              </motion.h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {thoughts.map((thought, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: index * 0.2 }}
-                    className="backdrop-blur-sm bg-gray-900/10 rounded-lg p-6 shadow-lg border border-pink-500/20 relative cursor-pointer"
-                    whileHover={{ scale: 1.02 }}
-                  >
-                    <p className="text-gray-300">{thought}</p>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          </section>
-          <section id="contact" className="min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent relative z-10" ref={(el) => (sectionsRef.current['contact'] = el)}>
-            <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 1 }} className="max-w-3xl w-full text-center">
-              <motion.h2
-                className="text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-600"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-              >
-                Initiate Contact
-              </motion.h2>
-              <motion.p
-                className="text-lg text-gray-300 mb-8"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-              >
-                Ready to embark on a cosmic coding journey together? Let's connect and explore new digital frontiers!
-              </motion.p>
-              <motion.a
-                href="https://x.com/GaurishMehra"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-pink-500/40 to-purple-600/40 backdrop-blur-sm text-white font-semibold rounded-full transition-all duration-200 hover:from-pink-600/50 hover:to-purple-700/50"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-              >
-                <Send size={20} className="mr-2" />
-                Let's Chat
-              </motion.a>
-            </motion.div>
-          </section>
-          <NavigationArrows />
-          <div className="hidden md:block fixed right-4 md:right-8 top-1/2 transform -translate-y-1/2 z-50 backdrop-blur-sm bg-gray-900/10 rounded-full p-2">
-            <div className="flex flex-col md:space-y-4 space-y-2">
-              {['home', 'about', 'terminal', 'projects', 'thoughts', 'contact'].map((section) => (
-                <motion.div
-                  key={section}
-                  className={`w-2 md:w-3 h-2 md:h-3 rounded-full cursor-pointer ${currentSection === section ? 'bg-pink-500' : 'bg-gray-600'}`}
-                  whileHover={{ scale: 1.5 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => scrollToSection(section)}
-                />
-              ))}
-            </div>
-          </div>
+          <HomeSection setRef={setRef} />
+          <AboutSection setRef={setRef} stack={stack} />
+          <ProjectsSection setRef={setRef} />
+          <ThoughtsSection setRef={setRef} thoughts={thoughts} />
+          <ContactSection setRef={setRef} />
+          
+          <NavigationArrows currentSection={currentSection} scrollToSection={scrollToSection} />
+          <Navigation currentSection={currentSection} scrollToSection={scrollToSection} />
         </motion.div>
+      )}
+
+      {/* Mobile popup overlay */}
+      {showMobilePopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center z-50">
+          <div className="bg-gray-800 p-4 rounded">
+            <p className="text-white mb-2">
+              This website is more fun on desktop. The mobile version is like a lil demo.
+            </p>
+            <button 
+              onClick={() => setShowMobilePopup(false)} 
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+            >
+              Got it!
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
