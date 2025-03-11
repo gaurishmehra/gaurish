@@ -16,6 +16,62 @@ import 'prismjs/components/prism-json';
 import 'prismjs/components/prism-markdown';
 
 const VSCodeInterface = ({ isOpen, onClose }) => {
+  // Early return if not open - this ensures the component doesn't render at all
+  if (!isOpen) return null;
+  
+  // Check if on mobile and show message instead
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    // Check if we're on a mobile device
+    const checkMobile = () => {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+             window.innerWidth < 768;
+    };
+    
+    setIsMobile(checkMobile());
+    
+    // Add resize listener for responsive handling
+    const handleResize = () => setIsMobile(checkMobile());
+    window.addEventListener('resize', handleResize);
+    
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
+  // If on mobile, show a message that VS Code interface is not available
+  if (isMobile) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[3px]"
+      >
+        <motion.div 
+          className="bg-[#1e1e1e] text-gray-300 w-5/6 p-6 rounded-lg shadow-xl flex flex-col"
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ type: "spring", damping: 25, stiffness: 200 }}
+        >
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-semibold">VS Code Explorer</h3>
+            <div 
+              className="w-6 h-6 flex items-center justify-center rounded-full bg-red-500 cursor-pointer hover:bg-red-400"
+              onClick={onClose}
+            >×</div>
+          </div>
+          <p className="mb-4">The VS Code interface is only available on desktop devices. Please visit on a larger screen to explore the code.</p>
+          <button 
+            onClick={onClose}
+            className="self-end bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+          >
+            Close
+          </button>
+        </motion.div>
+      </motion.div>
+    );
+  }
+
   // GitHub repo config - fixed in code
   const GITHUB_REPO = {
     owner: 'gaurishmehra',
@@ -410,9 +466,6 @@ const VSCodeInterface = ({ isOpen, onClose }) => {
       </div>
     );
   }, [currentFile, fileContent, isLoading, error, cursorPosition, handleEditorClick, GITHUB_REPO]);
-
-  // If not open, don't render anything
-  if (!isOpen) return null;
 
   // Sort function for explorer items is memoized
   const sortItems = (a, b) => {
