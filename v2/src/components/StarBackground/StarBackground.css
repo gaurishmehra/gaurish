@@ -1,0 +1,149 @@
+.stars-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+    background: radial-gradient(ellipse at center, #0a0a0f 0%, #050508 50%, #000000 100%);
+    perspective: 500px;
+  }
+  
+  .star-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+  }
+  
+  .star {
+    position: absolute;
+    background-color: #ffffff;
+    border-radius: 50%;
+    width: var(--initial-size, 1px);
+    height: var(--initial-size, 1px);
+    opacity: 0;
+    transform-origin: center center;
+    will-change: transform, width, height, opacity, left, top;
+  }
+  
+  .star.streaking {
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+  }
+  
+  .star.pink-tint {
+    background-color: rgba(255, 105, 180, 0.9);
+    box-shadow: 0 0 6px 2px rgba(255, 105, 180, 0.5);
+  }
+  
+  @keyframes warpStarEffect {
+    0% {
+      opacity: 0;
+      transform: translateZ(-100px) scale(0.1);
+      width: var(--initial-size, 1px);
+      height: var(--initial-size, 1px);
+    }
+    5% {
+      opacity: var(--opacity, 1);
+    }
+    80% {
+      opacity: var(--opacity, 1);
+    }
+    100% {
+      opacity: 0;
+      left: var(--end-x, 100%);
+      top: var(--end-y, 50%);
+      transform: translateZ(400px) scale(2);
+      width: var(--final-size, 3px);
+      height: var(--streak-length, var(--final-size, 3px));
+    }
+  }
+  
+  /* Add an additional animation for the streaking stars */
+  .streaking {
+    animation: rotateStreak var(--speed) linear var(--delay) infinite !important;
+  }
+  
+  @keyframes rotateStreak {
+    0% {
+      transform: translateZ(-100px) scale(0.1) rotate(0deg);
+      width: var(--initial-size, 1px);
+      height: var(--initial-size, 1px);
+    }
+    100% {
+      transform: translateZ(400px) scale(2) rotate(360deg);
+      width: var(--final-size, 3px);
+      height: var(--streak-length, var(--final-size, 3px));
+    }
+  }
+  
+  /* Add a pulse effect to some stars for more visual interest */
+  .star:nth-child(7n) {
+    animation: warpStarEffect var(--speed) linear var(--delay) infinite, 
+               pulseStar 3s ease-in-out infinite !important;
+  }
+  
+  @keyframes pulseStar {
+    0%, 100% {
+      box-shadow: 0 0 5px 2px rgba(255, 255, 255, 0.1);
+    }
+    50% {
+      box-shadow: 0 0 10px 4px rgba(255, 255, 255, 0.3);
+    }
+  }
+  
+  /* Pink tinted stars pulse with pink glow */
+  .pink-tint {
+    animation: warpStarEffect var(--speed) linear var(--delay) infinite,
+               pulsePink 4s ease-in-out infinite !important;
+  }
+  
+  @keyframes pulsePink {
+    0%, 100% {
+      box-shadow: 0 0 5px 2px rgba(255, 105, 180, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 15px 5px rgba(255, 105, 180, 0.5);
+    }
+  }
+  
+  /* Mobile-specific optimizations */
+  @media screen and (max-width: 768px) {
+    .stars-wrapper {
+      perspective: 300px; /* Adjusted perspective for mobile */
+    }
+    
+    /* Reduce animation complexity on mobile */
+    .star:nth-child(7n) {
+      animation: warpStarEffect var(--speed) linear var(--delay) infinite !important;
+      box-shadow: 0 0 4px 1px rgba(255, 255, 255, 0.1);
+    }
+    
+    .pink-tint {
+      animation: warpStarEffect var(--speed) linear var(--delay) infinite !important;
+      box-shadow: 0 0 4px 1px rgba(255, 105, 180, 0.3);
+    }
+    
+    /* Simpler keyframes for better performance */
+    @keyframes warpStarEffect {
+      0% {
+        opacity: 0;
+        transform: translateZ(-50px) scale(0.1);
+      }
+      10% {
+        opacity: var(--opacity, 1);
+      }
+      90% {
+        opacity: var(--opacity, 1);
+      }
+      100% {
+        opacity: 0;
+        left: var(--end-x, 100%);
+        top: var(--end-y, 50%);
+        transform: translateZ(200px) scale(1.5);
+        width: var(--final-size, 2px);
+        height: var(--streak-length, var(--final-size, 2px));
+      }
+    }
+  }

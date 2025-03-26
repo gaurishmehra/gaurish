@@ -24,6 +24,7 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isVSCodeOpen, setIsVSCodeOpen] = useState(false);
   const [showMobilePopup, setShowMobilePopup] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const handleStartupComplete = (particleSystem) => {
     setStartupParticles(particleSystem);
@@ -82,9 +83,10 @@ const Home = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Detect mobile devices and show popup if applicable
+  // Detect mobile devices and update isMobile state
   useEffect(() => {
     if (typeof navigator !== 'undefined' && /Mobi|Android/i.test(navigator.userAgent)) {
+      setIsMobile(true);
       setShowMobilePopup(true);
     }
   }, []);
@@ -97,11 +99,16 @@ const Home = () => {
     <div className="min-h-screen w-full bg-[#0a0a0a] text-white overflow-x-hidden font-mono relative">
       <Background startupParticles={startupParticles} />
 
-      {/* Render MouseTrail only when VSCode is closed */}
+      {/* Render MouseTrail always when VSCode is closed */}
       {!isVSCodeOpen && <MouseTrail />}
 
-      <VSCodeButton onClick={toggleVSCode} />
-      <VSCodeInterface isOpen={isVSCodeOpen} onClose={() => setIsVSCodeOpen(false)} />
+      {/* Only render VS Code related components if not on mobile */}
+      {!isMobile && (
+        <>
+          <VSCodeButton onClick={toggleVSCode} />
+          <VSCodeInterface isOpen={isVSCodeOpen} onClose={() => setIsVSCodeOpen(false)} />
+        </>
+      )}
       
       {isLoading ? (
         <StartupAnimation onComplete={handleStartupComplete} />

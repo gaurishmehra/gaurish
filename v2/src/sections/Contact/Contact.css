@@ -1,0 +1,141 @@
+.contact-section {
+    background: rgba(5, 5, 8, 0.3);
+    position: relative;
+}
+
+.contact-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.contact-intro {
+    color: #cccccc;
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 50px;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.simplified-contact {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 80px;
+}
+
+.contact-message {
+    max-width: 800px;
+    background: linear-gradient(145deg, rgba(15, 15, 20, 0.6), rgba(5, 5, 10, 0.8));
+    border-radius: 12px;
+    padding: 40px;
+    border: 1px solid rgba(159, 0, 82, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.message-content h3 {
+    color: #ffffff;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    background: linear-gradient(90deg, #ff69b4, #9f0052);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.message-content p {
+    color: #cccccc;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    margin-bottom: 20px;
+}
+
+.contact-alternative {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid rgba(159, 0, 82, 0.2);
+}
+
+.contact-alternative h4 {
+    color: #ffffff;
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Space between GitHub and X buttons */
+    flex-wrap: wrap; /* Allows wrapping on smaller screens */
+}
+
+.github-button,
+.x-button {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(90deg, rgba(255, 105, 180, 0.2), rgba(159, 0, 82, 0.3));
+    color: #ffffff;
+    text-decoration: none;
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-weight: 600;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(159, 0, 82, 0.4);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.github-button:hover,
+.x-button:hover {
+    background: linear-gradient(90deg, rgba(255, 105, 180, 0.3), rgba(159, 0, 82, 0.4));
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.github-icon,
+.x-icon {
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.footer {
+    text-align: center;
+    padding-top: 50px;
+    border-top: 1px solid rgba(159, 0, 82, 0.2);
+    color: #cccccc;
+}
+
+.footer p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+}
+
+@media screen and (max-width: 768px) {
+    .contact-message {
+        padding: 30px 20px;
+        margin: 0 15px;
+    }
+    
+    .message-content h3 {
+        font-size: 1.5rem;
+    }
+    
+    .message-content p {
+        font-size: 1rem;
+    }
+    
+    .contact-alternative h4 {
+        font-size: 1.2rem;
+    }
+    
+    .github-button,
+    .x-button {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .social-links {
+        gap: 15px; /* Slightly smaller gap on mobile */
+    }
+}

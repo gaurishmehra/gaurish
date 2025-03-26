@@ -1,0 +1,114 @@
+.thoughts-section {
+    background: rgba(5, 5, 8, 0.3);
+    position: relative;
+  }
+  
+  .thoughts-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .thoughts-intro {
+    color: #cccccc;
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 50px;
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+  
+  .thoughts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 30px;
+    margin-bottom: 50px;
+  }
+  
+  .thought-card {
+    background: linear-gradient(145deg, rgba(15, 15, 20, 0.6), rgba(5, 5, 10, 0.8));
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(159, 0, 82, 0.2);
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .thought-card:hover {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 105, 180, 0.3);
+    transform: translateY(-10px);
+  }
+  
+  .thought-content {
+    padding: 25px;
+    flex-grow: 1;
+  }
+  
+  .thought-category {
+    display: inline-block;
+    padding: 5px 12px;
+    background: linear-gradient(90deg, rgba(255, 105, 180, 0.1), rgba(159, 0, 82, 0.1));
+    border-radius: 15px;
+    font-size: 0.75rem;
+    color: #ff69b4;
+    margin-bottom: 15px;
+    font-weight: 600;
+  }
+  
+  .thought-title {
+    font-size: 1.5rem;
+    color: #ffffff;
+    margin-bottom: 15px;
+    line-height: 1.3;
+  }
+  
+  .thought-excerpt {
+    color: #cccccc;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  
+  .thought-date {
+    color: #999999;
+    font-size: 0.85rem;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .thoughts-grid {
+      grid-template-columns: 1fr;
+      padding: 0 15px;
+    }
+    
+    .thought-card {
+      max-width: 100%;
+    }
+    
+    .thought-title {
+      font-size: 1.3rem;
+    }
+    
+    .thought-excerpt {
+      font-size: 0.95rem;
+    }
+  }
+  
+  @media screen and (max-width: 480px) {
+    .thoughts-grid {
+      gap: 20px;
+    }
+    
+    .thought-content {
+      padding: 20px;
+    }
+    
+    .thought-category {
+      font-size: 0.7rem;
+      padding: 4px 10px;
+    }
+  }

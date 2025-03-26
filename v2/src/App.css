@@ -1,0 +1,110 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+}
+
+body {
+  background-color: #000000;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+.App {
+  position: relative;
+  z-index: 1;
+}
+
+.section {
+  min-height: 100vh;
+  width: 100%;
+  padding: 100px 150px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  color: #e0e0e0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  display: inline-block;
+  position: relative;
+}
+
+.section-title::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 50px;
+  height: 2px;
+  background: linear-gradient(90deg, #ff69b4, #9f0052);
+}
+
+/* Improved responsive styles */
+@media screen and (max-width: 1200px) {
+  .section {
+    padding: 100px 80px;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .section {
+    padding: 90px 60px;
+  }
+  
+  .section-title {
+    font-size: 2.2rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .section {
+    padding: 80px 40px;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .section {
+    padding: 70px 20px;
+  }
+  
+  .section-title {
+    font-size: 1.8rem;
+  }
+}
+
+/* Add smooth scrolling and animation optimizations for mobile */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Touch optimization for mobile */
+@media (hover: none) {
+  /* Applying larger touch targets on mobile */
+  button, 
+  a {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 12px 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
