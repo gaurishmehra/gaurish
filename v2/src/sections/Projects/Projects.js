@@ -6,60 +6,60 @@ const Projects = () => {
   const [activeFilter, setActiveFilter] = useState('all');
   
   const projects = [
-    {
-      id: 1,
-      title: "redacted",
-      description: "redacted",
-      category: "web",
-      image: "redacted.jpg",
-      technologies: ["redacted", "redacted", "redacted", "redacted"],
-      status: "closed-source"
-    },
-    {
-      id: 2,
-      title: "redacted",
-      description: "redacted",
-      category: "web",
-      image: "redacted.jpg",
-      technologies: ["redacted", "redacted", "redacted", "redacted"],
-      status: "closed-source"
-    },
-    {
-      id: 3,
-      title: "redacted",
-      description: "redacted",
-      category: "design",
-      image: "redacted.jpg",
-      technologies: ["redacted", "redacted", "redacted", "redacted"],
-      status: "closed-source"
-    },
-    {
-      id: 4,
-      title: "redacted",
-      description: "redacted",
-      category: "mobile",
-      image: "redacted.jpg",
-      technologies: ["redacted", "redacted", "redacted", "redacted"],
-      status: "closed-source"
-    },
-    {
-      id: 5,
-      title: "redacted",
-      description: "redacted",
-      category: "web",
-      image: "redacted.jpg",
-      technologies: ["redacted", "redacted", "redacted", "redacted"],
-      status: "closed-source"
-    },
-    {
-      id: 6,
-      title: "redacted",
-      description: "redacted",
-      category: "design",
-      image: "redacted.jpg",
-      technologies: ["redacted", "redacted", "redacted", "redacted"],
-      status: "closed-source"
-    }
+    // {
+    //   id: 1,
+    //   title: "redacted",
+    //   description: "redacted",
+    //   category: "web",
+    //   image: "redacted.jpg",
+    //   technologies: ["redacted", "redacted", "redacted", "redacted"],
+    //   status: "closed-source"
+    // },
+    // {
+    //   id: 2,
+    //   title: "redacted",
+    //   description: "redacted",
+    //   category: "web",
+    //   image: "redacted.jpg",
+    //   technologies: ["redacted", "redacted", "redacted", "redacted"],
+    //   status: "closed-source"
+    // },
+    // {
+    //   id: 3,
+    //   title: "redacted",
+    //   description: "redacted",
+    //   category: "design",
+    //   image: "redacted.jpg",
+    //   technologies: ["redacted", "redacted", "redacted", "redacted"],
+    //   status: "closed-source"
+    // },
+    // {
+    //   id: 4,
+    //   title: "redacted",
+    //   description: "redacted",
+    //   category: "mobile",
+    //   image: "redacted.jpg",
+    //   technologies: ["redacted", "redacted", "redacted", "redacted"],
+    //   status: "closed-source"
+    // },
+    // {
+    //   id: 5,
+    //   title: "redacted",
+    //   description: "redacted",
+    //   category: "web",
+    //   image: "redacted.jpg",
+    //   technologies: ["redacted", "redacted", "redacted", "redacted"],
+    //   status: "closed-source"
+    // },
+    // {
+    //   id: 6,
+    //   title: "redacted",
+    //   description: "redacted",
+    //   category: "design",
+    //   image: "redacted.jpg",
+    //   technologies: ["redacted", "redacted", "redacted", "redacted"],
+    //   status: "closed-source"
+    // }
   ];
   
   const filteredProjects = activeFilter === 'all' 
@@ -84,10 +84,10 @@ const Projects = () => {
             <div className="line"></div>
             <div className="planet-small"></div>
           </div>
-          <p className="projects-intro">
+          {/* <p className="projects-intro">
             Explore my cosmic collection of web development and design projects. 
             Each one represents a unique journey into the digital universe.
-          </p>
+          </p> */}
         </motion.div>
         
         <motion.div 
@@ -112,7 +112,7 @@ const Projects = () => {
           </div>
         </motion.div>
         
-        <motion.div 
+        {/* <motion.div 
           className="project-filters"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -144,7 +144,7 @@ const Projects = () => {
             Design
           </button>
         </motion.div>
-        
+         */}
         <div className="projects-grid">
           {filteredProjects.map((project, index) => (
             <motion.div 
