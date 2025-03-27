@@ -21,9 +21,9 @@ const Contact = () => {
             <div className="line"></div>
             <div className="planet-small"></div>
           </div>
-          <p className="contact-intro">
+          {/* <p className="contact-intro">
             I’m currently charting my course through examinations, but I’ll be open for new missions soon.
-          </p>
+          </p> */}
         </motion.div>
 
         <div className="simplified-contact">
@@ -83,7 +83,7 @@ const Contact = () => {
       <div className="footer">
         <p>© {new Date().getFullYear()} Gaurish Mehra. All rights reserved.</p>
         <p>Built with React and a passion for the cosmos 🚀</p>
-        <p>Last updated: {new Date().toISOString().split('T')[0]}</p>
+        <p>Last updated: 27th March, 2025</p>
       </div>
     </section>
   );

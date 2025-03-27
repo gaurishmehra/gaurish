@@ -13,7 +13,9 @@ const Intro = () => {
           className="intro-text"
         >
           <h2>Hello, I'm</h2>
-          <h1>Gaurish Mehra</h1>
+          <h1>
+            <span className="typing-text">Gaurish Mehra</span>
+          </h1>
           <h3>
             <span className="text-gradient"> Developer</span> | 
             <span className="text-gradient"> Student</span> | 
@@ -24,7 +26,7 @@ const Intro = () => {
             17yr old, self taught "Full Stack" developer, with a huge passion for llms
           </p>
           <div className="intro-buttons">
-            <a href="#projects" className="intro-button primary-button">View My Work</a>
+            <a href="#projects" className="intro-button primary-button">View My Projects</a>
             <a href="#contact" className="intro-button secondary-button">Contact Me</a>
           </div>
         </motion.div>
