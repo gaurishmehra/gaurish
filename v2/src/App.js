@@ -3,6 +3,7 @@ import React from 'react';
 import './App.css';
 import Navbar from './components/Navbar/Navbar';
 import StarBackground from './components/StarBackground/StarBackground';
+import MouseTrail from './components/MouseTrail/MouseTrail';
 import Intro from './sections/Intro/Intro';
 import About from './sections/About/About';
 import Thoughts from './sections/Thoughts/Thoughts';
@@ -13,6 +14,7 @@ function App() {
   return (
     <div className="App">
       <StarBackground />
+      <MouseTrail />
       <Navbar />
       <Intro />
       <About />

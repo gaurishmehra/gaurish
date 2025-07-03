@@ -1,0 +1,69 @@
+.mouse-trail-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 999;
+  overflow: hidden;
+}
+
+.trail-particle {
+  position: absolute;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  will-change: transform, opacity;
+  animation: particleFloat 1s ease-out forwards;
+}
+
+@keyframes particleFloat {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0.3);
+    opacity: 0;
+  }
+}
+
+/* Alternative trail styles - uncomment to try different effects */
+
+/* Comet-like trail */
+.trail-particle.comet {
+  border-radius: 50% 0 50% 0;
+  background: linear-gradient(45deg, #ff69b4, #9f0052);
+}
+
+/* Sparkle effect */
+.trail-particle.sparkle {
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+/* Performance optimizations for mobile */
+@media (max-width: 768px) {
+  .mouse-trail-container {
+    display: none; /* Hide on mobile to save performance */
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .trail-particle {
+    animation: none;
+    transition: opacity 0.3s ease;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .trail-particle {
+    background: white !important;
+    box-shadow: 0 0 4px white !important;
+  }
+}

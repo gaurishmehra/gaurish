@@ -8,42 +8,36 @@ const Thoughts = () => {
       id: 1,
       title: "Open-Source Collaboration",
       excerpt: "Open-source is great for learning and helping others grow—collaboration drives progress in ways closed systems can’t.",
-      date: "March 20, 2025",
       category: "Technology"
     },
     {
       id: 2,
-      title: "What LLMs Really Are",
-      excerpt: "LLMs aren’t 'AI'—they’re stacks of math equations predicting the next word, yet they’re transforming how we interact with tech.",
-      date: "March 10, 2025",
+      title: "Thinking LLMs",
+      excerpt: "Your 'Thinking AI' is not really thinking, in simple terms, beating around the bush helps autoregressive models to hallucinate less.",
       category: "Technology"
     },
     {
       id: 3,
       title: "The Scale of the Cosmos",
       excerpt: "The observable universe spans 93 billion light-years. We might never find life out there, but that doesn’t mean it’s not waiting.",
-      date: "February 25, 2025",
       category: "Space"
     },
     {
       id: 4,
       title: "The Endless Wonder of Pi",
       excerpt: "Pi fascinates me—an irrational constant weaving through math and the cosmos, defying our need for tidy conclusions.",
-      date: "February 15, 2025",
       category: "Mathematics"
     },
     {
       id: 5,
       title: "Limits of the Universe",
       excerpt: "Even light has a cap at 299,792 km/s. It’s the universe’s speed limit, a reminder that not everything stretches to infinity.",
-      date: "January 30, 2025",
       category: "Space"
     },
     {
       id: 6,
       title: "The Mind-Blowing Scale of 52!",
       excerpt: "52! is roughly 8.065 × 10⁶⁷—a number so vast it outstrips the atoms in the universe, showing how fast factorials explode.",
-      date: "January 10, 2025",
       category: "Mathematics"
     }
   ];
@@ -86,7 +80,6 @@ const Thoughts = () => {
                 <div className="thought-category">{thought.category}</div>
                 <h3 className="thought-title">{thought.title}</h3>
                 <p className="thought-excerpt">{thought.excerpt}</p>
-                <div className="thought-date">{thought.date}</div>
               </div>
             </motion.div>
           ))}

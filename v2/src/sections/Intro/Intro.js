@@ -23,7 +23,7 @@ const Intro = () => {
           </h3>
           <p>
             Welcome to my cosmic corner of the internet.<br></br> 
-            17yr old, self taught "Full Stack" developer, with a huge passion for llms
+            17yr old, Student developer, with a huge passion for learning about space and technology.
           </p>
           <div className="intro-buttons">
             <a href="#projects" className="intro-button primary-button">View My Projects</a>

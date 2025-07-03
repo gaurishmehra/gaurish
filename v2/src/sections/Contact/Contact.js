@@ -35,13 +35,12 @@ const Contact = () => {
             viewport={{ once: true }}
           >
             <div className="message-content">
-              <h3>Orbiting Exams Right Now</h3>
-              <p>I’m focusing on my entrance exams at the moment, but I’d love to connect with fellow space travelers and coders once I’m back in range.</p>
-              <p>Check back soon for updated contact info—thanks for your patience!</p>
+              <h3>Say hello!</h3>
+              <p>Hit me up for a cool project or just a casual conversation about space or tech!</p>
               
               <div className="contact-alternative">
-                <h4>In the Meantime</h4>
-                <p>Track my progress on GitHub or ping me on X for updates on my projects and availability.</p>
+                <h4>Socials</h4>
+                <p>Track my progress on GitHub or shoot a DM on X</p>
                 <div className="social-links">
                   <motion.a 
                     href="https://github.com/gaurishmehra" 
@@ -83,7 +82,7 @@ const Contact = () => {
       <div className="footer">
         <p>© {new Date().getFullYear()} Gaurish Mehra. All rights reserved.</p>
         <p>Built with React and a passion for the cosmos 🚀</p>
-        <p>Last updated: 27th March, 2025</p>
+        <p>Last updated: 3rd July, 2025</p>
       </div>
     </section>
   );

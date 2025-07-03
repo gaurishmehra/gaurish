@@ -4,11 +4,10 @@ import './About.css';
 
 const About = () => {
   const skills = [
-    'Python', 'Rust', 'JavaScript', 'TypeScript', 'Java',
-    'React', 'Vue', 'Svelte', 'Ionic', 'Lynx',
-    'Linux', 'TensorFlow', 'Transformers', 'PyTorch', 'Rocket', 'Flask', 'FastAPI',
-    'Tailwind CSS', 'Django', 'Node.js', 'Express',
-    'MySQL',
+    'Python', 'JavaScript', 'TypeScript', 'C++',
+    'React', 'Ionic', 'Lynx',
+    'Linux','Transformers', 'PyTorch', 'Flask', 
+    'FastAPI', 'MySQL',
   ];
 
   return (
@@ -57,14 +56,13 @@ const About = () => {
             <p>
               I’m Gaurish Mehra, a 17-year-old developer navigating the vast expanse of code and technology. 
               My orbit includes a deep fascination with large language models—sparked back in the GPT-2 era—and 
-              a passion for space that fuels my curiosity. I’ve been running Arch Linux since I was 12 or 13, 
+              a passion for space that fuels my curiosity. I’ve been running Arch Linux since I was 12, 
               tweaking systems and exploring the digital universe one command at a time.
             </p>
             <p>
-              Currently, I’m charting my trajectory toward the JEE and other Indian entrance exams to secure 
-              a launchpad at a top college. Beyond that, I spend my time coding, experimenting with frameworks, 
-              and diving into the mechanics of machine learning. Space exploration—its tech and its mysteries—keeps 
-              me grounded while I aim for the stars.
+              I'm currently in the college admission process. Beyond that, I spend my time coding, watching
+              shows/movies, diving into the latest tech products and learning more about the universe.
+              I love to explore new technologies and use them to make projects that I personally use daily,
             </p>
             
             <div className="skills-section">
