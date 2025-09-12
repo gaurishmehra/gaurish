@@ -60,9 +60,9 @@ const About = () => {
               tweaking systems and exploring the digital universe one command at a time.
             </p>
             <p>
-              I'm currently in the college admission process. Beyond that, I spend my time coding, watching
-              shows/movies, diving into the latest tech products and learning more about the universe.
-              I love to explore new technologies and use them to make projects that I personally use daily,
+              I'm pursuing a B.Tech in Computer Science, passionate about coding and building practical projects I use daily.
+              When I'm not programming, you'll find me exploring the latest tech products, binge-watching shows, or learning about the universe.
+              I love discovering new technologies and turning them into solutions that enhance my everyday life.
             </p>
             
             <div className="skills-section">
