@@ -77,7 +77,7 @@ const Journey = () => {
             The Journey
           </h2>
           <p className="text-star-muted text-lg max-w-2xl mx-auto">
-            Six years of growth, learning, and building. Each chapter built on the last.
+            Eight years of growth, learning, and building. Each chapter built on the last.
           </p>
         </motion.div>
 
