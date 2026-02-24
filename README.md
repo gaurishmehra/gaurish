@@ -1,2 +1,2 @@
 # Uno dos tres
-https://gaurish.one
+https://gaurish.dev
