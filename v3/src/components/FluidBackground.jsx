@@ -914,15 +914,16 @@ const FluidBackground = () => {
 
   useEffect(() => {
     const showTimer = setTimeout(() => setShowHint(true), 1500);
-    const hideTimer = setTimeout(() => setShowHint(false), 6000);
+    const hideDuration = isMobile ? 12000 : 6000;
+    const hideTimer = setTimeout(() => setShowHint(false), hideDuration);
     const dismiss = () => setShowHint(false);
-    window.addEventListener('mousemove', dismiss, { once: true });
-    window.addEventListener('touchstart', dismiss, { once: true });
+    if (!isMobile) {
+      window.addEventListener('mousemove', dismiss, { once: true });
+    }
     return () => {
       clearTimeout(showTimer);
       clearTimeout(hideTimer);
       window.removeEventListener('mousemove', dismiss);
-      window.removeEventListener('touchstart', dismiss);
     };
   }, []);
 
