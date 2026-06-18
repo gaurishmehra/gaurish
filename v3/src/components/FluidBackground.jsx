@@ -914,15 +914,18 @@ const FluidBackground = () => {
 
   useEffect(() => {
     const showTimer = setTimeout(() => setShowHint(true), 1500);
-    const hideDuration = isMobile ? 12000 : 6000;
-    const hideTimer = setTimeout(() => setShowHint(false), hideDuration);
-    const dismiss = () => setShowHint(false);
-    if (!isMobile) {
-      window.addEventListener('mousemove', dismiss, { once: true });
+    if (isMobile) {
+      const hideTimer = setTimeout(() => setShowHint(false), 12000);
+      return () => { clearTimeout(showTimer); clearTimeout(hideTimer); };
     }
+    let moves = 0;
+    const dismiss = () => {
+      moves++;
+      if (moves >= 2) setShowHint(false);
+    };
+    window.addEventListener('mousemove', dismiss);
     return () => {
       clearTimeout(showTimer);
-      clearTimeout(hideTimer);
       window.removeEventListener('mousemove', dismiss);
     };
   }, []);
