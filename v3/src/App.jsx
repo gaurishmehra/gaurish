@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-import Background from './components/Background';
-import MouseTrail from './components/MouseTrail';
+import FluidBackground from './components/FluidBackground';
 import Navigation from './components/Navigation';
 import VSCodeButton from './components/VSCodeButton';
 import VSCodeExplorer from './components/VSCodeExplorer';
@@ -53,9 +52,7 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-cosmic-black text-star-white noise-overlay">
-      <Background />
-      
-      {!isMobile && !isVSCodeOpen && <MouseTrail />}
+      <FluidBackground />
       
       {!isMobile && (
         <>

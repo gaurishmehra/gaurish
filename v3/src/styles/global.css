@@ -43,7 +43,6 @@ html {
 body {
   font-family: var(--font-body);
   background-color: var(--color-cosmic-black);
-  background-image: radial-gradient(circle at 14% 12%, rgba(107, 90, 125, 0.16), transparent 35%), radial-gradient(circle at 82% 76%, rgba(232, 180, 200, 0.12), transparent 45%);
   color: var(--color-star-white);
   line-height: 1.6;
   overflow-x: hidden;
