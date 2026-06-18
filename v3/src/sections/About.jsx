@@ -45,7 +45,7 @@ const About = () => {
               </p>
             </div>
 
-            <div className="mt-8 rounded-2xl bg-cosmic-dark/60 px-5 py-4">
+            <div className="mt-8 rounded-2xl bg-cosmic-dark/60 backdrop-blur-xl border border-nebula-light/15 px-5 py-4">
               <p className="font-mono text-xs uppercase tracking-[0.18em] text-star-muted">Build Philosophy</p>
               <p className="mt-2 text-star-white">Macos polish, linux power.</p>
             </div>
@@ -56,7 +56,7 @@ const About = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-100px' }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="rounded-3xl bg-cosmic-dark/55 p-6 md:p-8"
+            className="rounded-3xl bg-cosmic-dark/55 backdrop-blur-xl border border-nebula-light/15 p-6 md:p-8"
           >
             <h3 className="font-display text-2xl text-star-white mb-6">Tech Stack</h3>
 

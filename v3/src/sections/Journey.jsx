@@ -53,12 +53,12 @@ const Journey = () => {
       description: 'Started building projects I actually use day to day personal tools, scripts, and apps born out of genuine need.',
       highlight: 'Self driven projects',
     },
-{
+    {
       year: '2026',
       age: '18',
-      title: 'Reverse Engineering RGB',
-      description: 'Took my Chinese laptop with RGB controls locked behind a Windows only app and zero documentation none. Reverse engineered how it all worked from scratch and got full control of the lights from within Linux.',
-      highlight: 'Reverse engineered RGB',
+      title: 'Full Hardware Reverse Engineering',
+      description: 'No docs, no Linux support, no API. Reverse engineered the entire hardware control layer of my Infinix GT Book from scratch, USB protocols, ACPI calls, EC registers, the works. Got RGB lighting, performance modes, and fan control all working on Linux with a single CLI tool.',
+      highlight: 'RGB + Modes + Fans from nothing',
       isCurrent: true,
     },
   ];

@@ -940,8 +940,9 @@ const FluidBackground = () => {
       />
       {showHint && (
         <div
-          className="fixed bottom-8 left-1/2 z-10 -translate-x-1/2 px-6 py-3 rounded-full pointer-events-none"
+          className="fixed bottom-8 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full pointer-events-none"
           style={{
+            zIndex: 2147483647,
             background: 'rgba(15, 15, 20, 0.6)',
             backdropFilter: 'blur(14px)',
             WebkitBackdropFilter: 'blur(14px)',
