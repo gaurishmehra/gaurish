@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 
 const isMobileDevice = typeof window !== 'undefined' && (
@@ -440,6 +440,8 @@ function generateColor() {
 const FluidBackground = () => {
   const reduceMotion = useReducedMotion();
   const canvasRef = useRef(null);
+  const [showHint, setShowHint] = useState(false);
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -910,13 +912,46 @@ const FluidBackground = () => {
     };
   }, [reduceMotion]);
 
+  useEffect(() => {
+    const showTimer = setTimeout(() => setShowHint(true), 1500);
+    const hideTimer = setTimeout(() => setShowHint(false), 6000);
+    const dismiss = () => setShowHint(false);
+    window.addEventListener('mousemove', dismiss, { once: true });
+    window.addEventListener('touchstart', dismiss, { once: true });
+    return () => {
+      clearTimeout(showTimer);
+      clearTimeout(hideTimer);
+      window.removeEventListener('mousemove', dismiss);
+      window.removeEventListener('touchstart', dismiss);
+    };
+  }, []);
+
   return (
-    <canvas
-      ref={canvasRef}
-      className="pointer-events-none fixed inset-0 z-0"
-      style={{ width: '100vw', height: '100vh' }}
-      aria-hidden="true"
-    />
+    <>
+      <canvas
+        ref={canvasRef}
+        className="pointer-events-none fixed inset-0 z-0"
+        style={{ width: '100vw', height: '100vh' }}
+        aria-hidden="true"
+      />
+      {showHint && (
+        <div
+          className="fixed bottom-8 left-1/2 z-10 -translate-x-1/2 px-5 py-2.5 rounded-full text-sm transition-opacity duration-700 pointer-events-none"
+          style={{
+            background: 'rgba(15, 15, 20, 0.55)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: '1px solid rgba(107, 90, 125, 0.2)',
+            color: 'var(--color-star-dim)',
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.8rem',
+            letterSpacing: '0.03em',
+          }}
+        >
+          {isMobile ? 'Best viewed on desktop btw' : 'Move your cursor and see the magic'}
+        </div>
+      )}
+    </>
   );
 };
 
