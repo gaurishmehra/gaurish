@@ -936,19 +936,21 @@ const FluidBackground = () => {
       />
       {showHint && (
         <div
-          className="fixed bottom-8 left-1/2 z-10 -translate-x-1/2 px-5 py-2.5 rounded-full text-sm transition-opacity duration-700 pointer-events-none"
+          className="fixed bottom-8 left-1/2 z-10 -translate-x-1/2 px-6 py-3 rounded-full pointer-events-none"
           style={{
-            background: 'rgba(15, 15, 20, 0.55)',
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
-            border: '1px solid rgba(107, 90, 125, 0.2)',
-            color: 'var(--color-star-dim)',
+            background: 'rgba(15, 15, 20, 0.6)',
+            backdropFilter: 'blur(14px)',
+            WebkitBackdropFilter: 'blur(14px)',
+            border: '1px solid rgba(232, 180, 200, 0.25)',
+            boxShadow: '0 0 20px rgba(232, 180, 200, 0.1), 0 0 40px rgba(107, 90, 125, 0.08)',
+            color: 'var(--color-star-white)',
             fontFamily: 'var(--font-mono)',
-            fontSize: '0.8rem',
-            letterSpacing: '0.03em',
+            fontSize: '0.82rem',
+            letterSpacing: '0.04em',
+            animation: 'hintPulse 2.5s ease-in-out infinite',
           }}
         >
-          {isMobile ? 'Best viewed on desktop btw' : 'Move your cursor and see the magic'}
+          {isMobile ? 'Best viewed on desktop btw' : 'Move your cursor and see the magic ✦'}
         </div>
       )}
     </>
