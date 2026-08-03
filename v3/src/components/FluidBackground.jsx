@@ -792,8 +792,8 @@ const FluidBackground = () => {
       p.id = id;
       p.down = true;
       p.moved = false;
-      p.texcoordX = posX / window.innerWidth;
-      p.texcoordY = 1.0 - posY / window.innerHeight;
+      p.texcoordX = posX / canvas.width;
+      p.texcoordY = 1.0 - posY / canvas.height;
       p.deltaX = 0;
       p.deltaY = 0;
       p.color = generateColor();
@@ -803,8 +803,8 @@ const FluidBackground = () => {
       p.moved = true;
       const prevX = p.texcoordX;
       const prevY = p.texcoordY;
-      p.texcoordX = posX / window.innerWidth;
-      p.texcoordY = 1.0 - posY / window.innerHeight;
+      p.texcoordX = posX / canvas.width;
+      p.texcoordY = 1.0 - posY / canvas.height;
       p.deltaX = correctDeltaX(p.texcoordX - prevX);
       p.deltaY = correctDeltaY(p.texcoordY - prevY);
       p.color = generateColor();
@@ -825,47 +825,39 @@ const FluidBackground = () => {
 
     const onMouseMove = (e) => {
       const rect = canvas.getBoundingClientRect();
-      const posX = scaleByPixelRatio(e.clientX - rect.left);
-      const posY = scaleByPixelRatio(e.clientY - rect.top);
-      if (pointer.down) {
-        // dragging handled elsewhere if needed
-      }
+      const posX = e.clientX - rect.left;
+      const posY = e.clientY - rect.top;
       updatePointerMoveData(pointer, posX, posY);
     };
     const onMouseDown = (e) => {
       const rect = canvas.getBoundingClientRect();
-      const posX = scaleByPixelRatio(e.clientX - rect.left);
-      const posY = scaleByPixelRatio(e.clientY - rect.top);
+      const posX = e.clientX - rect.left;
+      const posY = e.clientY - rect.top;
       updatePointerDownData(pointer, -1, posX, posY);
     };
     const onMouseUp = () => { pointer.down = false; };
     const onTouchStart = (e) => {
       if (e.touches[0]) {
         const rect = canvas.getBoundingClientRect();
-        const posX = scaleByPixelRatio(e.touches[0].clientX - rect.left);
-        const posY = scaleByPixelRatio(e.touches[0].clientY - rect.top);
+        const posX = e.touches[0].clientX - rect.left;
+        const posY = e.touches[0].clientY - rect.top;
         updatePointerDownData(pointer, e.touches[0].identifier, posX, posY);
       }
     };
     const onTouchMove = (e) => {
       if (e.touches[0]) {
         const rect = canvas.getBoundingClientRect();
-        const posX = scaleByPixelRatio(e.touches[0].clientX - rect.left);
-        const posY = scaleByPixelRatio(e.touches[0].clientY - rect.top);
+        const posX = e.touches[0].clientX - rect.left;
+        const posY = e.touches[0].clientY - rect.top;
         updatePointerMoveData(pointer, posX, posY);
       }
     };
     const onTouchEnd = () => { pointer.down = false; };
 
-    function scaleByPixelRatio(input) {
-      const pixelRatio = window.devicePixelRatio || 1;
-      return Math.floor(input * pixelRatio);
-    }
-
     /* ----- resize ----- */
     const resizeCanvas = () => {
-      const w = Math.floor(window.innerWidth * Math.min(window.devicePixelRatio, 1));
-      const h = Math.floor(window.innerHeight * Math.min(window.devicePixelRatio, 1));
+      const w = Math.floor(window.innerWidth);
+      const h = Math.floor(window.innerHeight);
       if (canvas.width !== w || canvas.height !== h) {
         canvas.width = w;
         canvas.height = h;
